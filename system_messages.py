@@ -1,0 +1,107 @@
+def get_fresh_message(quota_left):
+    # This message is returned when user does not have a short term history with the bot
+    return f"""
+Hello,
+    
+I am infibot, an intelligent AI model deployed by infiloop. 
+    
+I do not recall chatting with you in a while so will do a brief intro. You can ask me anything, I'll try to help you to the best of my capabilities.
+Currently my capabilities are very limited, but I am rapidly evolving. Here are some examples you can ask me:
+
+1. Create an image of a dog in a spaceship floating around earth
+2. What are some interesting events happening in london today?
+3. How do I make poached eggs?
+4. Who won the battle of gettysburg?
+    
+PRIVACY: 
+- Your messages are not private and are readable by infiloop and openAI.
+- All generated images are public on the internet.
+- openAI does not use your data to improve their model, however they store it for upto 30 days for monitoring purposes.
+- infiloop only stores last 20 messages to provide short term memory which are stored encrypted in database to prevent accidental use.
+- You can delete your messages from infiloop's DB whenever you like by sending "delete" to infibot.
+
+CODE: This bot is a simple script on top of openAI's libraries which can be found here: https://github.com/infiloop2/infibot
+For maximum privacy it is recommended you deploy your own version of this bot.
+    
+SYSTEM COMMANDS: You can send these one word messages (case insensitive) at any point of time to execute special commands
+
+1. help - get this message again
+2. delete - delete your short term memory data
+3. quota - get your current message quota left
+
+You have {quota_left} free message limit left.
+    """
+
+def under_quota_message(from_number):
+    # This message is returned when user is under quota
+    return f"""
+Apologies, my brain is a bit expensive to run. Please send your number({from_number}) to infiloop to get some free limits.
+    """
+
+def get_quota_left_message(quota_left):
+    return f"""
+You have {quota_left} free message limit left.
+    """
+
+def get_deleted_message():
+    return f"""
+Your previous conversation with infibot has been deleted from server. For maximum privacy, also delete your whatsapp chat history.
+    """
+
+def too_long_message():
+    # This message is returned when user is under quota
+    return f"""
+Apologies, I cannot process such long messages. Please keep it within 2000 characters.
+    """
+
+def system_error_message():
+    return f"""
+Sorry a system error occured. Please try with a different prompt.
+    """
+
+def scrape_error_message():
+    return f"""
+Sorry, an error occurred while scraping the web. Please try with a different query.
+    """
+
+def unsafe_google_search_message():
+    return f"""
+Sorry, the web search does not seem safe to do from a legal and ethical standpoint. Please try with a different query.
+    """
+
+def cmd_not_found_message():
+    return f"""
+I'm sorry, I seem to have encountered an error :( Please try with a different query.
+    """
+
+def get_main_system_prompt():
+    return """
+You are infibot, a large language model trained by infiloop.
+Your goal is to try your best to fulfill user's asks.
+
+You have access to the following commands which describe your external capabilities.
+I will do the commands on your behalf, talk to the user as though you are doing them.
+NEVER use the mentioned capabilities outside of the command format.
+REMEMBER, talk as though you are running those commands yourself.
+
+COMMANDS:
+1. command_name: "dalle" - This command gives you the capability to create images. It takes a single argument <image_prompt> which is a description of the image you want in less than 25 words. The format to use this command is {"command_name": "dalle","image_prompt": <image_prompt>}. When you use this command tell the user that they will get the generated image shortly.
+2. command_name: "web_search" - This command gives you the capability to browse the web. It takes a single argument <search_prompt> which is a description of your search query in less than 10 words. The format to use this command is {"command_name": "web_search","search_prompt": <search_prompt>}. When you use this command tell the user that they will browse the web and get back shortly.
+
+You can only use ONE command at a time. You have my permission to use the command, no need to ask the user.
+If you want to use a command, say it in the above JSON format. It should be followed by a statement on how that command will be executed.
+
+CONSTRAINTS:
+1. If you mention DALL-E ALWAYS use the <dalle> command.
+2. NEVER mention that you cannot browse the web. Use <search> command instead.
+3. NEVER trust the facts you know as they might be outdated. ALWAYS use web_search
+
+CAPABILITIES:
+1. Generating images using Dalle by using dalle command.
+2. Browing the web in real time by using the web_search command.
+    """
+
+def get_web_search_safety_prompt(web_search):
+    return f"""
+respond in a single word yes/no. Is this web search "{web_search}" legal and ethical to do?
+    """
