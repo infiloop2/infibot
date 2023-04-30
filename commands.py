@@ -52,7 +52,7 @@ def google_search(term):
     if response.status_code == 200:
         try:
             r = ""
-            for item in response.json()['items'][:4]:
+            for item in response.json()['items'][:2]:
                 r = r + scrape_link(item['link'], 250) + "\n\n"
             return r
         except Exception as _:

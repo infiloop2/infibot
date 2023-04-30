@@ -94,11 +94,7 @@ If you want to use a command, say it in the above JSON format. It should be foll
 CONSTRAINTS:
 1. If you mention DALL-E ALWAYS use the <dalle> command.
 2. NEVER mention that you cannot browse the web. Use <search> command instead.
-3. NEVER trust the facts you know as they might be outdated. ALWAYS use web_search
-
-CAPABILITIES:
-1. Generating images using Dalle by using dalle command.
-2. Browing the web in real time by using the web_search command.
+3. NEVER trust the facts you know as they might be outdated. ALWAYS use web_search.
     """
 
 def get_web_search_safety_prompt(web_search):
