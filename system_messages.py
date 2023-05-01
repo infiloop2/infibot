@@ -14,8 +14,9 @@ SYSTEM COMMANDS: You can send these one word messages (case insensitive) at any 
 5. accept privacy - accept privacy policy and start chatting with me
 7. history - get the short term history of our conversation including debugging information
 6. delete - delete your short term memory data
-7. about - know more about me and how you can help me improve
-8. anything else - goes to AI assistant
+7. private - turn on private mode where no messages are stored, but I lose context after every message
+8. about - know more about me and how you can help me improve
+9. anything else - goes to AI assistant
 
 You have {quota_left} free message limit left.
     """
@@ -23,12 +24,15 @@ You have {quota_left} free message limit left.
 def get_privacy_message():
     return f"""
 PRIVACY: 
+There are several parties involved which handle your data. Please read through this policy carerfully.
 
-- Your messages are not private and are readable by infiloop and openAI.
-- All generated images are public on the internet.
-- openAI does not use your data to improve their model, however they store it for upto 30 days for monitoring purposes.
-- infiloop only stores last 20 messages to provide short term memory which are stored encrypted in database to prevent accidental use.
-- You can delete your messages from infiloop's DB whenever you like by sending "delete" to infibot.
+- infiloop - Your last 20 messages are stored in order to give context to infibot to hold a conversation. These are stored encrypted and are obscured from infiloop. You have additional features to delete your history or turn on private mode. For maximum safety and privacy you can deploy your own bot using https://github.com/infiloop2/infibot
+- openAI - openAI stores all messages for last 30 days for monitoring purposes. It does not use them to train their model. Read more here: https://openai.com/policies/api-data-usage-policies
+- dallE - All images created through dallE are publicly accessible through a URL.
+- google - All search history is stored by google.
+- whatsapp - All messages are e2e encrypted and not readable by whatsapp / meta.
+
+Please reply "accept privacy" to accept this privacy policy and start chatting with me.
     """
 
 def get_capabilities_message():

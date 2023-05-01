@@ -18,6 +18,8 @@ def is_system_command(mssg):
         return True 
     if mssg.lower() == "delete":
         return True 
+    if mssg.lower() == "private":
+        return True 
     if mssg.lower() == "about":
         return True 
     return False
