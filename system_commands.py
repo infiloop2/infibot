@@ -124,5 +124,5 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
             put_unsafe_mode(from_, False, user_secret)
             send_whatsapp_text_reply(phone_number_id, from_, get_unsafe_mode_off_message(), is_private_on, is_unsafe_on)
 
-        send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)), is_private_on, is_unsafe_on)
+        send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)), is_private_on=False, is_unsafe_on=False)
         return
