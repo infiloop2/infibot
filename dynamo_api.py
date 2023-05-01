@@ -46,7 +46,7 @@ def get_last_privacy_accepted_timestamp(number, user_secret):
     attr_name = getSanitizedKey("last_privacy_accepted_timestamp", user_secret) 
     try:
         k = getSanitizedKey(number, user_secret)
-        return int(metadata_table.get_item(Key={'number': k})['Item'][attr_name])
+        return int(decrypt(user_secret, metadata_table.get_item(Key={'number': k})['Item'][attr_name]))
     except Exception as e:
         return 0
     
@@ -57,7 +57,7 @@ def put_last_privacy_accepted_timestamp(number, timestamp, user_secret):
         Key={'number': k},
         UpdateExpression=f'SET {attr_name} = :val',
         ExpressionAttributeValues={
-            ':val': str(timestamp)
+            ':val': encrypt(user_secret,str(timestamp))
         }
     )
 
