@@ -7,6 +7,12 @@ import os
 from system_messages import scrape_error_message, get_web_search_safety_prompt, unsafe_google_search_message
 
 def handle_command(command, phone_number_id, from_, history, user_secret, is_private_on, is_unsafe_on):
+    if is_unsafe_on:
+        send_whatsapp_text_reply(phone_number_id, from_, "Sorry commands are disabled in unsafe mode.", is_private_on, is_unsafe_on)
+        history = append_history(history, "system", "There was an error executing the command")
+        write_short_term_memory(from_, history, user_secret, is_private_on)
+        return
+
     if command['command_name'] == 'dalle':
         image_prompt = command['image_prompt']
         url = run_dalle(image_prompt)

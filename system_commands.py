@@ -102,7 +102,7 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
     
     if mssg.lower() == "i take responsibility":
         put_last_unsafe_accepted_timestamp(from_, int(time.time()), user_secret)
-        send_whatsapp_text_reply(phone_number_id, from_, "Thank you for acepting responsibility. You can now use unsafe mode.", is_private_on, is_unsafe_on)
+        send_whatsapp_text_reply(phone_number_id, from_, "Thank you for accepting responsibility. You can now use unsafe mode.", is_private_on, is_unsafe_on)
         return
 
     if mssg.lower() == "about":

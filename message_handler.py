@@ -74,6 +74,7 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
             return
 
     ##### Main AI Response #####
+    # TODO: Fork if unsafe mode is on
     ai_response, command = get_openai_response(message, history)
     
     #Send assistant reply
