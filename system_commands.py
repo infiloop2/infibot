@@ -80,6 +80,9 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
         if not is_private_on:
             send_whatsapp_text_reply(phone_number_id, from_, "Private Mode is already OFF", is_private_on, is_unsafe_on)
             return
+        if is_unsafe_on:
+            send_whatsapp_text_reply(phone_number_id, from_, "Cannot turn off Private mode in Unsafe mode", is_private_on, is_unsafe_on)
+            return
         put_private_mode(from_, False, user_secret)
         send_whatsapp_text_reply(phone_number_id, from_, get_private_mode_off_message(), is_private_on, is_unsafe_on)
         return
