@@ -4,7 +4,7 @@ from system_messages import get_fresh_message, under_quota_message, too_long_mes
 from rate_limits import is_within_limits, reset_limits, use_one_limit
 from short_term_memory import get_short_term_memory, write_short_term_memory, append_history
 from openai_api import get_openai_response
-from dynamo_api import get_quota
+from dynamo_api import get_quota, get_last_intro_message_timestamp, put_last_intro_message_timestamp
 from commands import handle_command
 from whatsapp_sender import send_whatsapp_text_reply
 from system_commands import is_system_command, handle_system_command
@@ -44,7 +44,11 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
 
     history = get_short_term_memory(from_, user_secret)
     if len(history) == 0:
-        send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)))
+        # Send welcome message if not sent within last 6 hours already
+        last_ts = get_last_intro_message_timestamp(from_, user_secret)
+        if current_time - last_ts > 6 * 3600:
+            send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)))
+            put_last_intro_message_timestamp(from_, current_time, user_secret)
 
     ai_response, command = get_openai_response(message, history)
     
