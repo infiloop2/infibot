@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import os
 from system_messages import scrape_error_message, get_web_search_safety_prompt, unsafe_google_search_message
 
-def handle_command(command, phone_number_id, from_, history, user_secret, is_private_on):
+def handle_command(command, phone_number_id, from_, history, user_secret, is_private_on, is_unsafe_on):
     if command['command_name'] == 'dalle':
         image_prompt = command['image_prompt']
         url = run_dalle(image_prompt)
@@ -18,7 +18,7 @@ def handle_command(command, phone_number_id, from_, history, user_secret, is_pri
     if command['command_name'] == 'web_search':
         search_prompt = command['search_prompt']
         if not is_google_search_safe(search_prompt):
-            send_whatsapp_text_reply(phone_number_id, from_, unsafe_google_search_message(), is_private_on)
+            send_whatsapp_text_reply(phone_number_id, from_, unsafe_google_search_message(), is_private_on, is_unsafe_on)
             history = append_history(history, "system", "The web search was not performed as it was not safe")
             write_short_term_memory(from_, history, user_secret, is_private_on)
             return
@@ -26,7 +26,7 @@ def handle_command(command, phone_number_id, from_, history, user_secret, is_pri
         search_result = google_search(search_prompt)
         if search_result is None:
             # Some error happened
-            send_whatsapp_text_reply(phone_number_id, from_, scrape_error_message(), is_private_on)
+            send_whatsapp_text_reply(phone_number_id, from_, scrape_error_message(), is_private_on, is_unsafe_on)
             history = append_history(history, "system", "There was an error doing a web search")
             write_short_term_memory(from_, history, user_secret, is_private_on)
             return
@@ -34,7 +34,7 @@ def handle_command(command, phone_number_id, from_, history, user_secret, is_pri
         # Append search results and generate a new response
         history = append_history(history, "system", "The web search resulted in the following search results: " + search_result)
         ai_response, _  = get_openai_response(None, history, False)
-        send_whatsapp_text_reply(phone_number_id, from_, ai_response, is_private_on)
+        send_whatsapp_text_reply(phone_number_id, from_, ai_response, is_private_on, is_unsafe_on)
         history = append_history(history, "assistant", ai_response)
         write_short_term_memory(from_, history, user_secret, is_private_on)
         return

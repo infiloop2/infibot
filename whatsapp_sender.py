@@ -2,10 +2,15 @@ import requests
 import os
 import json
 
-def send_whatsapp_text_reply(phone_number_id, to, reply_message, is_private_on):
+def send_whatsapp_text_reply(phone_number_id, to, reply_message, is_private_on, is_unsafe_on):
     body_text = reply_message
+    prefix = ""
     if is_private_on:
-        body_text = f"""🔒Private Mode ON:
+        prefix = prefix + "🔒Private Mode ON:"
+    if is_unsafe_on:
+        prefix = prefix + "💀Unsafe Mode ON:"
+    
+        body_text = f"""{prefix}
 {body_text}
         """
     json_data = {
