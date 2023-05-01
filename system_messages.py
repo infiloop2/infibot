@@ -14,9 +14,10 @@ SYSTEM COMMANDS: You can send these one word messages (case insensitive) at any 
 5. accept privacy - accept privacy policy and start chatting with me
 6. history - get the short term history of our conversation including debugging information
 7. delete - delete your short term memory data
-8. private - turn on private mode where no messages are stored, but I lose context after every message
-9. about - know more about me and how you can help me improve
-10. anything else - goes to AI assistant
+8. private - turn on private mode where no new messages are stored, so I lose context after every message
+9. unprivate - start storing new messages to maintain context during conversation
+10. about - know more about me and how you can help me improve
+11. anything else - goes to AI assistant
 
 You have {quota_left} free message limit left.
     """

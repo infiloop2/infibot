@@ -61,6 +61,25 @@ def put_last_privacy_accepted_timestamp(number, timestamp, user_secret):
         }
     )
 
+def get_is_private_mode_on(number, user_secret):
+    attr_name = getSanitizedKey("is_private_mode_on", user_secret) 
+    try:
+        k = getSanitizedKey(number, user_secret)
+        return decrypt(user_secret, metadata_table.get_item(Key={'number': k})['Item'][attr_name]) == 'True'
+    except Exception as e:
+        return False
+
+def put_private_mode(number, turn_on_private, user_secret):
+    attr_name = getSanitizedKey("is_private_mode_on", user_secret) 
+    k = getSanitizedKey(number, user_secret)
+    metadata_table.update_item(
+        Key={'number': k},
+        UpdateExpression=f'SET {attr_name} = :val',
+        ExpressionAttributeValues={
+            ':val': encrypt(user_secret,str(turn_on_private))
+        }
+    )
+
 def get_quota(number):
     try:
         return int(limit_table.get_item(Key={'number': number})['Item']['quota'])
