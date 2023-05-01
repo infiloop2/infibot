@@ -53,14 +53,14 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
         # Send welcome message if not sent within last 6 hours already
         last_ts = get_last_intro_message_timestamp(from_, user_secret)
         if current_time - last_ts > 6 * 3600:
-            send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)), is_private_on=False)
+            send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)), is_private_on)
             put_last_intro_message_timestamp(from_, current_time, user_secret)
 
     # Verify user has accepted privacy policy
     last_privacy_ts = get_last_privacy_accepted_timestamp(from_, user_secret)
     if last_privacy_ts < last_privacy_updated_timestamp:
-        send_whatsapp_text_reply(phone_number_id, from_, "Please read and accept privacy policy before continuing", is_private_on=False)
-        send_whatsapp_text_reply(phone_number_id, from_, get_privacy_message(), is_private_on=False)
+        send_whatsapp_text_reply(phone_number_id, from_, "Please read and accept privacy policy before continuing", is_private_on)
+        send_whatsapp_text_reply(phone_number_id, from_, get_privacy_message(), is_private_on)
         return
 
 
