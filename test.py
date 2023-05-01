@@ -1,12 +1,25 @@
 from short_term_memory import get_short_term_memory, write_short_term_memory, append_history
 from openai_api import get_openai_response
-from dynamo_api import get_quota, put_quota
+from dynamo_api import get_quota, put_quota, get_last_intro_message_timestamp, put_last_intro_message_timestamp, get_last_privacy_accepted_timestamp, put_last_privacy_accepted_timestamp
 from commands import google_search, is_google_search_safe
 
 print("Testing dynamoDB integration")
+print("testing metadata retreival")
+put_last_intro_message_timestamp("dummy", 0, "test")
+print(get_last_intro_message_timestamp("dummy", "test"), "Should be 0")
+put_last_intro_message_timestamp("dummy", 100, "test")
+print(get_last_intro_message_timestamp("dummy", "test"), "Should be 100")
+
+put_last_privacy_accepted_timestamp("dummy", 0, "test")
+print(get_last_privacy_accepted_timestamp("dummy", "test"), "Should be 0")
+put_last_privacy_accepted_timestamp("dummy", 100, "test")
+print(get_last_privacy_accepted_timestamp("dummy", "test"), "Should be 100")
+
+print(get_last_intro_message_timestamp("dummy", "test"), "Should still be 100")
+
 print("putting and getting quota")
 put_quota("dummy", 100)
-print(get_quota("dummy"))
+print(get_quota("dummy"), "Should be 100")
 
 print(get_short_term_memory("dummy", "test"), "should be empty")
 write_short_term_memory("dummy", [], "test")
