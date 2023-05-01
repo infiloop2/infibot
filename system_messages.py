@@ -3,33 +3,56 @@ def get_fresh_message(quota_left):
     return f"""
 Hello,
     
-I am infibot, an intelligent AI model deployed by infiloop. 
-    
-I do not recall chatting with you in a while so will do a brief intro. You can ask me anything, I'll try to help you to the best of my capabilities.
-Currently my capabilities are very limited, but I am rapidly evolving. Here are some examples you can ask me:
+I am infibot, an intelligent AI model deployed by infiloop. I do not recall chatting with you in a while so will do a brief intro. You can ask me anything, I'll try to help you to the best of my capabilities.
 
-1. Create an image of a dog in a spaceship floating around earth
-2. What are some interesting events happening in london today?
-3. How do I make poached eggs?
-4. Who won the battle of gettysburg?
-    
+SYSTEM COMMANDS: You can send these one word messages (case insensitive) at any point of time to execute special commands
+
+1. help - get this message again
+2. quota - get your current message quota left
+3. examples - get an idea of my capabitlies of what I can do
+4. privacy - understand how your data is used and stored across different services
+5. accept privacy - accept privacy policy and start chatting with me
+7. history - get the short term history of our conversation including debugging information
+6. delete - delete your short term memory data
+7. about - know more about me and how you can help me improve
+8. anything else - goes to AI assistant
+
+You have {quota_left} free message limit left.
+    """
+
+def get_privacy_message():
+    return f"""
 PRIVACY: 
+
 - Your messages are not private and are readable by infiloop and openAI.
 - All generated images are public on the internet.
 - openAI does not use your data to improve their model, however they store it for upto 30 days for monitoring purposes.
 - infiloop only stores last 20 messages to provide short term memory which are stored encrypted in database to prevent accidental use.
 - You can delete your messages from infiloop's DB whenever you like by sending "delete" to infibot.
+    """
 
-CODE: This bot is a simple script on top of openAI's libraries which can be found here: https://github.com/infiloop2/infibot
-For maximum privacy it is recommended you deploy your own version of this bot.
-    
-SYSTEM COMMANDS: You can send these one word messages (case insensitive) at any point of time to execute special commands
+def get_capabilities_message():
+    return f"""
+CAPABILITIES:
 
-1. help - get this message again
-2. delete - delete your short term memory data
-3. quota - get your current message quota left
+- I have been trained on a large corpus of text from the internet and can generate text based on your prompts.
+- Additionally I have the capabiltity to generate images and browse the web for real time information.
+- Note: I am rapidly evolving and gaining new skills!
 
-You have {quota_left} free message limit left.
+Here are some examples you can ask me:
+
+1. Create an image of a dog in a spaceship floating around earth
+2. What are some interesting events happening in london today?
+3. How do I make poached eggs?
+4. Who won the battle of gettysburg?
+    """
+
+def get_about_message():
+    return f"""
+ABOUT:
+
+This bot is a simple script on top of openAI/open source foundational models which can be found here: https://github.com/infiloop2/infibot
+For maximum privacy and security it is recommended you deploy your own version of this bot.
     """
 
 def under_quota_message(from_number):
