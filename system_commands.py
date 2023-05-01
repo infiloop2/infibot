@@ -32,6 +32,8 @@ def is_system_command(mssg):
         return True 
     if mssg.lower() == "about":
         return True 
+    if mssg.lower() == "reset":
+        return True 
     return False
     
 def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_on, is_unsafe_on):
@@ -107,4 +109,17 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
 
     if mssg.lower() == "about":
         send_whatsapp_text_reply(phone_number_id, from_, get_about_message(), is_private_on, is_unsafe_on)
+        return
+
+    if mssg.lower() == "reset":
+        write_short_term_memory(from_, [], user_secret, is_private_on=False)
+        send_whatsapp_text_reply(phone_number_id, from_, get_deleted_message(), is_private_on, is_unsafe_on)
+        if is_private_on:
+            put_private_mode(from_, False, user_secret)
+            send_whatsapp_text_reply(phone_number_id, from_, get_private_mode_off_message(), is_private_on, is_unsafe_on)
+        if is_unsafe_on:
+            put_unsafe_mode(from_, False, user_secret)
+            send_whatsapp_text_reply(phone_number_id, from_, get_unsafe_mode_off_message(), is_private_on, is_unsafe_on)
+
+        send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)), is_private_on, is_unsafe_on)
         return

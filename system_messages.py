@@ -18,7 +18,8 @@ SYSTEM COMMANDS: You can send these one word messages (case insensitive) at any 
 9. unsafe - turn on unsafe mode where I remove all restrictions on what I can say
 10. safe - turn off unsafe mode and I'll start acting responsibly
 11. about - know more about me and how you can help me improve
-12. anything else - goes to AI assistant
+12. reset - reset all settings and start afresh
+13. anything else - goes to AI assistant
 
 You have {quota_left} free message limit left.
     """
