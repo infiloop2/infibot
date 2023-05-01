@@ -153,7 +153,7 @@ Unsafe mode is now ON. This means that there is no filtering on what I'll say or
 - Private mode is enabled by default in unsafe mode.
 - Your messages go to huggingFace instead of openAI for processing where a custom LLM model is run.
 
-Please reply "i take responsibility" (case insensitive) to take responsibility and continue with unsafe mode.
+If not already taken, please reply "i take responsibility" (case insensitive) to continue with unsafe mode.
     """
 
 def get_unsafe_mode_off_message():

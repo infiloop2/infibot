@@ -47,7 +47,6 @@ def get_last_privacy_accepted_timestamp(number, user_secret):
     try:
         k = getSanitizedKey(number, user_secret)
         return int(decrypt(user_secret, metadata_table.get_item(Key={'number': k})['Item'][attr_name]))
-        return int(decrypt(user_secret, metadata_table.get_item(Key={'number': k})['Item'][attr_name]))
     except Exception as e:
         return 0
     
@@ -97,6 +96,25 @@ def put_unsafe_mode(number, turn_on_unsafe, user_secret):
         UpdateExpression=f'SET {attr_name} = :val',
         ExpressionAttributeValues={
             ':val': encrypt(user_secret,str(turn_on_unsafe))
+        }
+    )
+
+def get_last_unsafe_accepted_timestamp(number, user_secret):
+    attr_name = getSanitizedKey("last_unsafe_accepted_timestamp", user_secret) 
+    try:
+        k = getSanitizedKey(number, user_secret)
+        return int(decrypt(user_secret, metadata_table.get_item(Key={'number': k})['Item'][attr_name]))
+    except Exception as e:
+        return 0
+    
+def put_last_unsafe_accepted_timestamp(number, timestamp, user_secret):
+    attr_name = getSanitizedKey("last_unsafe_accepted_timestamp", user_secret) 
+    k = getSanitizedKey(number, user_secret)
+    metadata_table.update_item(
+        Key={'number': k},
+        UpdateExpression=f'SET {attr_name} = :val',
+        ExpressionAttributeValues={
+            ':val': encrypt(user_secret,str(timestamp))
         }
     )
 

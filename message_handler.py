@@ -4,13 +4,14 @@ from system_messages import get_fresh_message, under_quota_message, too_long_mes
 from rate_limits import is_within_limits, reset_limits, use_one_limit
 from short_term_memory import get_short_term_memory, write_short_term_memory, append_history
 from openai_api import get_openai_response
-from dynamo_api import get_quota, get_last_intro_message_timestamp, put_last_intro_message_timestamp, get_last_privacy_accepted_timestamp, get_is_private_mode_on, get_is_unsafe_mode_on
+from dynamo_api import get_quota, get_last_intro_message_timestamp, put_last_intro_message_timestamp, get_last_privacy_accepted_timestamp, get_is_private_mode_on, get_is_unsafe_mode_on, get_last_unsafe_accepted_timestamp
 from commands import handle_command
 from whatsapp_sender import send_whatsapp_text_reply
-from system_commands import is_system_command, handle_system_command
+from system_commands import is_system_command, handle_system_command, get_unsafe_mode_on_message
 
-# Update this whenever you change privacy message so that you prompt the user to accept it again
+# Update this whenever you change privacy/unsafe message so that you prompt the user to accept it again
 last_privacy_updated_timestamp = 1682950000
+last_unsafe_updated_timestamp = 1682950000
 
 # Handle text messages to phone number ID, from, timestamp with message body
 def handle_text_message(phone_number_id, from_, timestamp, message, user_secret):
@@ -63,7 +64,14 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
         send_whatsapp_text_reply(phone_number_id, from_, "Please read and accept privacy policy before continuing", is_private_on, is_unsafe_on)
         send_whatsapp_text_reply(phone_number_id, from_, get_privacy_message(), is_private_on, is_unsafe_on)
         return
-
+    
+    # Verify user has accepted unsafe policy if in unsafe mode
+    if is_unsafe_on:
+        last_unsafe_ts = get_last_unsafe_accepted_timestamp(from_, user_secret)
+        if last_unsafe_ts < last_unsafe_updated_timestamp:
+            send_whatsapp_text_reply(phone_number_id, from_, "Please read and accept conditions for unsafe mode before proceeding", is_private_on, is_unsafe_on)
+            send_whatsapp_text_reply(phone_number_id, from_, get_unsafe_mode_on_message(), is_private_on, is_unsafe_on)
+            return
 
     ##### Main AI Response #####
     ai_response, command = get_openai_response(message, history)

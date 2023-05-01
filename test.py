@@ -1,6 +1,6 @@
 from short_term_memory import get_short_term_memory, write_short_term_memory, append_history
 from openai_api import get_openai_response
-from dynamo_api import get_quota, put_quota, get_last_intro_message_timestamp, put_last_intro_message_timestamp, get_last_privacy_accepted_timestamp, put_last_privacy_accepted_timestamp, get_is_private_mode_on, put_private_mode, get_is_unsafe_mode_on, put_unsafe_mode
+from dynamo_api import get_quota, put_quota, get_last_intro_message_timestamp, put_last_intro_message_timestamp, get_last_privacy_accepted_timestamp, put_last_privacy_accepted_timestamp, get_is_private_mode_on, put_private_mode, get_is_unsafe_mode_on, put_unsafe_mode, get_last_unsafe_accepted_timestamp, put_last_unsafe_accepted_timestamp
 from commands import google_search, is_google_search_safe
 
 print("Testing dynamoDB integration")
@@ -27,6 +27,10 @@ print(get_is_unsafe_mode_on("dummy", "test"), "Should be False")
 put_unsafe_mode("dummy", True, "test")
 print(get_is_unsafe_mode_on("dummy", "test"), "Should be True")
 
+put_last_unsafe_accepted_timestamp("dummy", 0, "test")
+print(get_last_unsafe_accepted_timestamp("dummy", "test"), "Should be 0")
+put_last_unsafe_accepted_timestamp("dummy", 100, "test")
+print(get_last_unsafe_accepted_timestamp("dummy", "test"), "Should be 100")
 
 print("putting and getting quota")
 put_quota("dummy", 100)
