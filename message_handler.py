@@ -1,22 +1,26 @@
 import time
 import os
-from system_messages import get_fresh_message, under_quota_message, too_long_message
+from system_messages import get_fresh_message, under_quota_message, too_long_message,get_privacy_message
 from rate_limits import is_within_limits, reset_limits, use_one_limit
 from short_term_memory import get_short_term_memory, write_short_term_memory, append_history
 from openai_api import get_openai_response
-from dynamo_api import get_quota, get_last_intro_message_timestamp, put_last_intro_message_timestamp
+from dynamo_api import get_quota, get_last_intro_message_timestamp, put_last_intro_message_timestamp, get_last_privacy_accepted_timestamp
 from commands import handle_command
 from whatsapp_sender import send_whatsapp_text_reply
 from system_commands import is_system_command, handle_system_command
+
+# Update this whenever you change privacy message so that you prompt the user to accept it again
+last_privacy_updated_timestamp = 1682950000
 
 # Handle text messages to phone number ID, from, timestamp with message body
 def handle_text_message(phone_number_id, from_, timestamp, message, user_secret):
     current_time = int(time.time())
     if current_time - timestamp > 60:
+        # Too old messages which may come through because of whatsapp server issues or retries due to errors
         return
-    
+
+    # admin system messages  
     if from_ == os.environ.get("admin_phone_number"):
-        # admin system messages
         if message.startswith("Quota"):
             spl = message.split(" ")
             if len(spl) == 4:
@@ -32,7 +36,6 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
         send_whatsapp_text_reply(phone_number_id, from_, under_quota_message(from_))
         return
     use_one_limit(from_)
-    
     if len(message) > 2000:
         send_whatsapp_text_reply(phone_number_id, from_, too_long_message())
         return
@@ -50,6 +53,14 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
             send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)))
             put_last_intro_message_timestamp(from_, current_time, user_secret)
 
+    # Verify user has accepted privacy policy
+    last_privacy_ts = get_last_privacy_accepted_timestamp(from_, user_secret)
+    if last_privacy_ts < last_privacy_updated_timestamp:
+        send_whatsapp_text_reply(phone_number_id, from_, "Please read and accept privacy policy before continuing")
+        send_whatsapp_text_reply(phone_number_id, from_, get_privacy_message())
+        return
+
+    ##### Main AI Response #####
     ai_response, command = get_openai_response(message, history)
     
     #Send assistant reply

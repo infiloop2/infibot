@@ -32,7 +32,7 @@ There are several parties involved which handle your data. Please read through t
 - google - All search history is stored by google.
 - whatsapp - All messages are e2e encrypted and not readable by whatsapp / meta.
 
-Please reply "accept privacy" to accept this privacy policy and start chatting with me.
+If not already accepted, please reply "accept privacy" (case insensitive) to accept this privacy policy and start chatting with me.
     """
 
 def get_capabilities_message():
