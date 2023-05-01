@@ -15,16 +15,6 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
     if current_time - timestamp > 120:
         return
     
-    # Check if within limits
-    if not is_within_limits(from_):
-        send_whatsapp_text_reply(phone_number_id, from_, under_quota_message(from_))
-        return
-    use_one_limit(from_)
-    
-    if len(message) > 2000:
-        send_whatsapp_text_reply(phone_number_id, from_, too_long_message())
-        return
-    
     if from_ == os.environ.get("admin_phone_number"):
         # admin system messages
         if message.startswith("Quota"):
@@ -37,6 +27,16 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
                 send_whatsapp_text_reply(phone_number_id, from_, "Quota reset for " + spl[1] + " to " + str(spl[2]))
                 return
     
+    # Check if within limits
+    if not is_within_limits(from_):
+        send_whatsapp_text_reply(phone_number_id, from_, under_quota_message(from_))
+        return
+    use_one_limit(from_)
+    
+    if len(message) > 2000:
+        send_whatsapp_text_reply(phone_number_id, from_, too_long_message())
+        return
+        
     # Handle system messages from users
     if is_system_command(message):
         handle_system_command(message, phone_number_id, from_)
