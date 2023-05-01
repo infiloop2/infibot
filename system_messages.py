@@ -159,5 +159,5 @@ If not already taken, please reply "i take responsibility" (case insensitive) to
 
 def get_unsafe_mode_off_message():
     return """
-Unsafe mode will now be turned OFF.
+Unsafe and private mode will now be turned OFF.
     """
