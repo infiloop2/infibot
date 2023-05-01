@@ -153,6 +153,7 @@ Unsafe mode is now ON. This means that there is no filtering on what I'll say or
 - Image generation and web search capabilities are disabled in unsafe mode.
 - Private mode is enabled by default in unsafe mode.
 - Your messages go to huggingFace instead of openAI for processing where a custom LLM model is run.
+- Quality of responses will sharply decline in unsafe mode as it will not be able to take benefir of openAI's data.
 - While all care is taken to protect privacy of your data, there is no formal guarantee. Deploy your own bot for maximum security.
 
 If not already taken, please reply "i take responsibility" (case insensitive) to continue with unsafe mode. Type safe to exit back to safe mode.
