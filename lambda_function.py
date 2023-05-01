@@ -63,7 +63,7 @@ def lambda_handler(event, context):
                                 timestamp = int(message['timestamp'])
                                 message_body = message["text"]["body"]
                                 try:
-                                    handle_text_message(phone_number_id, from_, timestamp, message_body)
+                                    handle_text_message(phone_number_id, from_, timestamp, message_body, getUserEncryptionSecret(event, from_))
                                 except Exception as _:
                                     send_whatsapp_text_reply(phone_number_id, from_, system_error_message())
                                 response = {
@@ -80,6 +80,15 @@ def lambda_handler(event, context):
         }
 
     return response
+
+def getUserEncryptionSecret(event, from_):
+    # Not purely a user defined secret, but derived from aws parameters + rotated every day so as not to be
+    # predictable by admin
+    dominContext = event["requestContext"]["domainPrefix"]
+    unixTimestamp = int(event["requestContext"]["timeEpoch"])
+    userAgent = event["requestContext"]["http"]["userAgent"]
+    unixTimestamp = unixTimestamp - (unixTimestamp % 86400000) # Round down to nearest day
+    return str(dominContext)+str(userAgent)+str(from_)+str(unixTimestamp)
 
 def verify_webhook(event):
     signature = event["headers"]["x-hub-signature-256"]

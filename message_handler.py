@@ -10,11 +10,16 @@ from whatsapp_sender import send_whatsapp_text_reply
 from system_commands import is_system_command, handle_system_command
 
 # Handle text messages to phone number ID, from, timestamp with message body
-def handle_text_message(phone_number_id, from_, timestamp, message):
+def handle_text_message(phone_number_id, from_, timestamp, message, user_secret):
     current_time = int(time.time())
     if current_time - timestamp > 120:
-        print("Ignoring message, too old call from webhook")
         return
+    
+    # Check if within limits
+    if not is_within_limits(from_):
+        send_whatsapp_text_reply(phone_number_id, from_, under_quota_message(from_))
+        return
+    use_one_limit(from_)
     
     if len(message) > 2000:
         send_whatsapp_text_reply(phone_number_id, from_, too_long_message())
@@ -24,7 +29,10 @@ def handle_text_message(phone_number_id, from_, timestamp, message):
         # admin system messages
         if message.startswith("Quota"):
             spl = message.split(" ")
-            if len(spl) == 3:
+            if len(spl) == 4:
+                if spl[3] != os.environ.get("admin_password"):
+                    send_whatsapp_text_reply(phone_number_id, from_, "Invalid admin password")
+                    return
                 reset_limits(spl[1], spl[2])
                 send_whatsapp_text_reply(phone_number_id, from_, "Quota reset for " + spl[1] + " to " + str(spl[2]))
                 return
@@ -38,11 +46,7 @@ def handle_text_message(phone_number_id, from_, timestamp, message):
     if len(history) == 0:
         send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)))
     
-    # Check if within limits
-    if not is_within_limits(from_):
-        send_whatsapp_text_reply(phone_number_id, from_, under_quota_message(from_))
-        return
-    use_one_limit(from_)
+
 
     ai_response, command = get_openai_response(message, history)
     
