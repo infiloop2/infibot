@@ -15,11 +15,8 @@ def send_whatsapp_text_reply(phone_number_id, to, reply_message):
         'Content-Type': 'application/json'
     }
 
-    try:
-        response = requests.post(url, headers=headers, data=data)
-        response.raise_for_status()
-    except requests.exceptions.RequestException as error:
-        print("Error:", error)
+    response = requests.post(url, headers=headers, data=data)
+    response.raise_for_status()
 
 def send_whatsapp_image_reply(phone_number_id, to, image_url):
     json_data = {
@@ -35,8 +32,5 @@ def send_whatsapp_image_reply(phone_number_id, to, image_url):
         'Content-Type': 'application/json'
     }
 
-    try:
-        response = requests.post(url, headers=headers, data=data)
-        response.raise_for_status()
-    except requests.exceptions.RequestException as error:
-        print("Error:", error)
+    response = requests.post(url, headers=headers, data=data)
+    response.raise_for_status()
