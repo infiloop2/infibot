@@ -2,11 +2,16 @@ import requests
 import os
 import json
 
-def send_whatsapp_text_reply(phone_number_id, to, reply_message):
+def send_whatsapp_text_reply(phone_number_id, to, reply_message, is_private_on):
+    body_text = reply_message
+    if is_private_on:
+        body_text = f"""🔒Private Mode ON:
+{body_text}
+        """
     json_data = {
         "messaging_product": "whatsapp",
         "to": to,
-        "text": {"body": reply_message},
+        "text": {"body": body_text},
     }
     data = json.dumps(json_data)
     url = f"https://graph.facebook.com/v16.0/{phone_number_id}/messages"

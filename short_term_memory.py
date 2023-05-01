@@ -21,5 +21,6 @@ def get_short_term_memory(number, user_secret):
     history = get_short_term_history(number, user_secret)
     return filter_and_sort_history(history)
 
-def write_short_term_memory(number, history, user_secret):
-    put_short_term_history(number, filter_and_sort_history(history), user_secret)
+def write_short_term_memory(number, history, user_secret, is_private_on):
+    if not is_private_on:
+        put_short_term_history(number, filter_and_sort_history(history), user_secret)

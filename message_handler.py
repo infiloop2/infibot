@@ -4,7 +4,7 @@ from system_messages import get_fresh_message, under_quota_message, too_long_mes
 from rate_limits import is_within_limits, reset_limits, use_one_limit
 from short_term_memory import get_short_term_memory, write_short_term_memory, append_history
 from openai_api import get_openai_response
-from dynamo_api import get_quota, get_last_intro_message_timestamp, put_last_intro_message_timestamp, get_last_privacy_accepted_timestamp
+from dynamo_api import get_quota, get_last_intro_message_timestamp, put_last_intro_message_timestamp, get_last_privacy_accepted_timestamp, get_is_private_mode_on
 from commands import handle_command
 from whatsapp_sender import send_whatsapp_text_reply
 from system_commands import is_system_command, handle_system_command
@@ -25,21 +25,24 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
             spl = message.split(" ")
             if len(spl) == 4:
                 if spl[3] != os.environ.get("admin_password"):
-                    send_whatsapp_text_reply(phone_number_id, from_, "Invalid admin password")
+                    send_whatsapp_text_reply(phone_number_id, from_, "Invalid admin password", is_private_on=False)
                     return
                 reset_limits(spl[1], spl[2])
-                send_whatsapp_text_reply(phone_number_id, from_, "Quota reset for " + spl[1] + " to " + str(spl[2]))
+                send_whatsapp_text_reply(phone_number_id, from_, "Quota reset for " + spl[1] + " to " + str(spl[2]), is_private_on=False)
                 return
     
     # Check if within limits
     if not is_within_limits(from_):
-        send_whatsapp_text_reply(phone_number_id, from_, under_quota_message(from_))
+        send_whatsapp_text_reply(phone_number_id, from_, under_quota_message(from_), is_private_on=False)
         return
     use_one_limit(from_)
     if len(message) > 2000:
-        send_whatsapp_text_reply(phone_number_id, from_, too_long_message())
+        send_whatsapp_text_reply(phone_number_id, from_, too_long_message(), is_private_on=False)
         return
-        
+    
+    # Global modes
+    is_private_on = get_is_private_mode_on(from_, user_secret)
+
     # Handle system messages from users
     if is_system_command(message):
         handle_system_command(message, phone_number_id, from_, user_secret)
@@ -50,26 +53,26 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
         # Send welcome message if not sent within last 6 hours already
         last_ts = get_last_intro_message_timestamp(from_, user_secret)
         if current_time - last_ts > 6 * 3600:
-            send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)))
+            send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)), is_private_on=False)
             put_last_intro_message_timestamp(from_, current_time, user_secret)
 
     # Verify user has accepted privacy policy
     last_privacy_ts = get_last_privacy_accepted_timestamp(from_, user_secret)
     if last_privacy_ts < last_privacy_updated_timestamp:
-        send_whatsapp_text_reply(phone_number_id, from_, "Please read and accept privacy policy before continuing")
-        send_whatsapp_text_reply(phone_number_id, from_, get_privacy_message())
+        send_whatsapp_text_reply(phone_number_id, from_, "Please read and accept privacy policy before continuing", is_private_on=False)
+        send_whatsapp_text_reply(phone_number_id, from_, get_privacy_message(), is_private_on=False)
         return
+
 
     ##### Main AI Response #####
     ai_response, command = get_openai_response(message, history)
     
     #Send assistant reply
-    send_whatsapp_text_reply(phone_number_id, from_, ai_response)
+    send_whatsapp_text_reply(phone_number_id, from_, ai_response, is_private_on)
     # Append to history
     history = append_history(history, "user", message)
     history = append_history(history, "assistant", ai_response)
-    write_short_term_memory(from_, history, user_secret)
-        
+    write_short_term_memory(from_, history, user_secret, is_private_on)
    
     if command is not None:
-        handle_command(command, phone_number_id, from_, history, user_secret)
+        handle_command(command, phone_number_id, from_, history, user_secret, is_private_on)

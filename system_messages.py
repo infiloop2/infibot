@@ -79,7 +79,7 @@ Your previous conversation with infibot has been deleted from server. For maximu
 def too_long_message():
     # This message is returned when user is under quota
     return f"""
-Apologies, I cannot process such long messages. Please keep it within 2000 characters.
+Sorry, I cannot process such long messages. Please keep it within 2000 characters and retry.
     """
 
 def system_error_message():

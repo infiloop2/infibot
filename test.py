@@ -27,16 +27,21 @@ put_quota("dummy", 100)
 print(get_quota("dummy"), "Should be 100")
 
 print(get_short_term_memory("dummy", "test"), "should be empty")
-write_short_term_memory("dummy", [], "test")
+write_short_term_memory("dummy", [], "test", is_private_on=False)
 print(get_short_term_memory("dummy", "test"), "should be empty")
 
 h = append_history([], "user", "Hello")
-write_short_term_memory("dummy", h, "test")
+write_short_term_memory("dummy", h, "test", is_private_on=False)
 print(get_short_term_memory("dummy", "test"), "should have hello")
 
 h = append_history(h, "system", "Hello, how are you?")
-write_short_term_memory("dummy", h, "test")
+write_short_term_memory("dummy", h, "test", is_private_on=False)
 print(get_short_term_memory("dummy", "test"), "should have hello, hello, how are you?")
+
+h = append_history(h, "user", "I am good. THIS SHOULD NOT BE PRINTED")
+write_short_term_memory("dummy", h, "test", is_private_on=True)
+print(get_short_term_memory("dummy", "test"), "should have hello, hello, how are you?, nothing more")
+
 
 print("Testing openAI integration with history")
 print(get_openai_response("Hello", h))
