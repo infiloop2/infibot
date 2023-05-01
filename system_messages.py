@@ -12,7 +12,7 @@ SYSTEM COMMANDS: You can send these one word messages (case insensitive) at any 
 3. examples - get an idea of my capabitlies of what I can do
 4. privacy - understand how your data is used and stored across different services
 5. accept privacy - accept privacy policy and start chatting with me
-6. history - get the short term history of our conversation including debugging information
+6. history - get the short term history of our conversation including debugging information (upto 2000 characters)
 7. delete - delete your short term memory data
 8. private - turn on private mode where no new messages are stored, so I lose context after every message
 9. unprivate - start storing new messages to maintain context during conversation
@@ -50,6 +50,7 @@ Here are some examples you can ask me:
 2. What are some interesting events happening in london today?
 3. How do I make poached eggs?
 4. Who won the battle of gettysburg?
+5. What's the latest political news in US?
     """
 
 def get_about_message():
