@@ -34,7 +34,7 @@ def is_system_command(mssg):
         return True 
     return False
     
-def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_on):
+def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_on, is_unsafe_on):
     if mssg.lower() == "help":
         send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)), is_private_on)
         return
@@ -83,14 +83,18 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
         return
     
     if mssg.lower() == "unsafe":
-        # TODO pass is unsafe mode on here
+        if is_unsafe_on:
+            send_whatsapp_text_reply(phone_number_id, from_, "Unsafe Mode is already ON", is_private_on)
+            return
         put_unsafe_mode(from_, True, user_secret)
         put_private_mode(from_, True, user_secret)
         send_whatsapp_text_reply(phone_number_id, from_, get_unsafe_mode_on_message(), is_private_on)
         return
     
     if mssg.lower() == "safe":
-        # TODO pass is unsafe mode on here
+        if not is_unsafe_on:
+            send_whatsapp_text_reply(phone_number_id, from_, "Unsafe Mode is already OFF", is_private_on)
+            return
         put_unsafe_mode(from_, False, user_secret)
         put_private_mode(from_, False, user_secret)
         send_whatsapp_text_reply(phone_number_id, from_, get_unsafe_mode_off_message(), is_private_on)

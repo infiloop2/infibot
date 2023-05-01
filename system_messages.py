@@ -140,7 +140,7 @@ Private mode is now ON. I will not store any new messages, however I will rememb
 
 def get_private_mode_off_message():
     return """
-Private mode is now OFF. I will now remember previous messages to give myself short term memory.
+Private mode will now be turned OFF. I will now remember previous messages to give myself short term memory.
     """
 
 def get_unsafe_mode_on_message():
@@ -158,5 +158,5 @@ Please reply "i take responsibility" (case insensitive) to take responsibility a
 
 def get_unsafe_mode_off_message():
     return """
-Unsafe mode is now OFF.
+Unsafe mode will now be turned OFF.
     """

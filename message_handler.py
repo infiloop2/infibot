@@ -4,7 +4,7 @@ from system_messages import get_fresh_message, under_quota_message, too_long_mes
 from rate_limits import is_within_limits, reset_limits, use_one_limit
 from short_term_memory import get_short_term_memory, write_short_term_memory, append_history
 from openai_api import get_openai_response
-from dynamo_api import get_quota, get_last_intro_message_timestamp, put_last_intro_message_timestamp, get_last_privacy_accepted_timestamp, get_is_private_mode_on
+from dynamo_api import get_quota, get_last_intro_message_timestamp, put_last_intro_message_timestamp, get_last_privacy_accepted_timestamp, get_is_private_mode_on, get_is_unsafe_mode_on
 from commands import handle_command
 from whatsapp_sender import send_whatsapp_text_reply
 from system_commands import is_system_command, handle_system_command
@@ -42,10 +42,11 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
     
     # Global modes
     is_private_on = get_is_private_mode_on(from_, user_secret)
+    is_unsafe_on = get_is_unsafe_mode_on(from_, user_secret)
 
     # Handle system messages from users
     if is_system_command(message):
-        handle_system_command(message, phone_number_id, from_, user_secret, is_private_on)
+        handle_system_command(message, phone_number_id, from_, user_secret, is_private_on, is_unsafe_on)
         return
 
     history = get_short_term_memory(from_, user_secret)
