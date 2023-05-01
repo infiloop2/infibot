@@ -39,14 +39,12 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
         
     # Handle system messages from users
     if is_system_command(message):
-        handle_system_command(message, phone_number_id, from_)
+        handle_system_command(message, phone_number_id, from_, user_secret)
         return
 
-    history = get_short_term_memory(from_)
+    history = get_short_term_memory(from_, user_secret)
     if len(history) == 0:
         send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)))
-    
-
 
     ai_response, command = get_openai_response(message, history)
     
@@ -55,8 +53,8 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
     # Append to history
     history = append_history(history, "user", message)
     history = append_history(history, "assistant", ai_response)
-    write_short_term_memory(from_, history)
+    write_short_term_memory(from_, history, user_secret)
         
    
     if command is not None:
-        handle_command(command, phone_number_id, from_, history)
+        handle_command(command, phone_number_id, from_, history, user_secret)

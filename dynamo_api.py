@@ -32,16 +32,18 @@ def put_quota(number, quota):
 
 # Expected form:
 # [{'timestamp': 123, 'role': "user", 'message': "hello"}, ... ]
-def get_short_term_history(number):
+def get_short_term_history(number, user_secret):
     try:
-        data = short_term_history_table.get_item(Key={'number': number})['Item']['history']
-        return json.loads(decrypt(number+random_encryption_key, data))
+        k = encrypt(user_secret,number)
+        data = short_term_history_table.get_item(Key={'number': k})['Item']['history']
+        return json.loads(decrypt(user_secret, data))
     except Exception as e:
         return []
     
-def put_short_term_history(number, history):
-    data = encrypt(number+random_encryption_key,json.dumps(history))
-    short_term_history_table.put_item(Item={'number': number, 'history': data})
+def put_short_term_history(number, history, user_secret):
+    k = encrypt(user_secret,number)
+    data = encrypt(user_secret,json.dumps(history))
+    short_term_history_table.put_item(Item={'number': k, 'history': data})
 
 
 def get_key(str):
@@ -52,11 +54,11 @@ def get_key(str):
 def encrypt(password, str):
     if len(str) == 0:
         return ""
-    f = Fernet(get_key(password))
+    f = Fernet(get_key(password+random_encryption_key))
     return f.encrypt(str.encode()).decode()
 
 def decrypt(password, bts):
     if len(bts) == 0:
         return ""
-    f = Fernet(get_key(password))
+    f = Fernet(get_key(password+random_encryption_key))
     return f.decrypt(bts).decode()

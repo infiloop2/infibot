@@ -17,9 +17,9 @@ def append_history(h, role, message):
     new_history.append({"timestamp": current_time, "role": role, "message": message})
     return new_history
 
-def get_short_term_memory(number):
-    history = get_short_term_history(number)
+def get_short_term_memory(number, user_secret):
+    history = get_short_term_history(number, user_secret)
     return filter_and_sort_history(history)
 
-def write_short_term_memory(number, history):
-    put_short_term_history(number, filter_and_sort_history(history))
+def write_short_term_memory(number, history, user_secret):
+    put_short_term_history(number, filter_and_sort_history(history), user_secret)

@@ -12,12 +12,12 @@ def is_system_command(mssg):
         return True 
     return False
     
-def handle_system_command(mssg, phone_number_id, from_):
+def handle_system_command(mssg, phone_number_id, from_, user_secret):
     if mssg.lower() == "help":
         send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)))
         return
     if mssg.lower() == "delete":
-        write_short_term_memory(from_, [])
+        write_short_term_memory(from_, [], user_secret)
         send_whatsapp_text_reply(phone_number_id, from_, get_deleted_message())
         return
     if mssg.lower() == "quota":

@@ -6,13 +6,13 @@ from bs4 import BeautifulSoup
 import os
 from system_messages import scrape_error_message, get_web_search_safety_prompt, unsafe_google_search_message
 
-def handle_command(command, phone_number_id, from_, history):
+def handle_command(command, phone_number_id, from_, history, user_secret):
     if command['command_name'] == 'dalle':
         image_prompt = command['image_prompt']
         url = run_dalle(image_prompt)
         send_whatsapp_image_reply(phone_number_id, from_, url)
         history = append_history(history, "system", "The user was given the generated image")
-        write_short_term_memory(from_, history)
+        write_short_term_memory(from_, history, user_secret)
         return
 
     if command['command_name'] == 'web_search':
@@ -20,7 +20,7 @@ def handle_command(command, phone_number_id, from_, history):
         if not is_google_search_safe(search_prompt):
             send_whatsapp_text_reply(phone_number_id, from_, unsafe_google_search_message())
             history = append_history(history, "system", "The web search was not performed as it was not safe")
-            write_short_term_memory(from_, history)
+            write_short_term_memory(from_, history, user_secret)
             return
     
         search_result = google_search(search_prompt)
@@ -28,7 +28,7 @@ def handle_command(command, phone_number_id, from_, history):
             # Some error happened
             send_whatsapp_text_reply(phone_number_id, from_, scrape_error_message())
             history = append_history(history, "system", "There was an error doing a web search")
-            write_short_term_memory(from_, history)
+            write_short_term_memory(from_, history, user_secret)
             return
         
         # Append search results and generate a new response
@@ -36,7 +36,7 @@ def handle_command(command, phone_number_id, from_, history):
         ai_response, _  = get_openai_response(None, history, False)
         send_whatsapp_text_reply(phone_number_id, from_, ai_response)
         history = append_history(history, "assistant", ai_response)
-        write_short_term_memory(from_, history)
+        write_short_term_memory(from_, history, user_secret)
         return
 
 

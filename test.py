@@ -2,7 +2,26 @@ from short_term_memory import get_short_term_memory, write_short_term_memory, ap
 from openai_api import get_openai_response
 from dynamo_api import get_quota, put_quota
 from commands import google_search, is_google_search_safe
-import time
+
+print("Testing dynamoDB integration")
+print("putting and getting quota")
+put_quota("dummy", 100)
+print(get_quota("dummy"))
+
+print(get_short_term_memory("dummy", "test"), "should be empty")
+write_short_term_memory("dummy", [], "test")
+print(get_short_term_memory("dummy", "test"), "should be empty")
+
+h = append_history([], "user", "Hello")
+write_short_term_memory("dummy", h, "test")
+print(get_short_term_memory("dummy", "test"), "should have hello")
+
+h = append_history(h, "system", "Hello, how are you?")
+write_short_term_memory("dummy", h, "test")
+print(get_short_term_memory("dummy", "test"), "should have hello, hello, how are you?")
+
+print("Testing openAI integration with history")
+print(get_openai_response("Hello", h))
 
 print("Testing basic openAI integration")
 response, _ = get_openai_response("Hello", [])
@@ -67,22 +86,4 @@ if command['command_name'] != 'dalle':
     raise Exception("dalle command not found")
 print("===========================")
 
-print("Testing dynamoDB integration")
-print("putting and getting quota")
-put_quota("dummy", 100)
-print(get_quota("dummy"))
 
-print(get_short_term_memory("dummy"))
-write_short_term_memory("dummy", [])
-print(get_short_term_memory("dummy"))
-
-h = append_history([], "user", "Hello")
-write_short_term_memory("dummy", h)
-print(get_short_term_memory("dummy"))
-
-h = append_history(h, "system", "Hello, how are you?")
-write_short_term_memory("dummy", h)
-print(get_short_term_memory("dummy"))
-
-print("Testing openAI integration with history")
-print(get_openai_response("Hello", h))
