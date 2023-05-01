@@ -54,7 +54,6 @@ def lambda_handler(event, context):
                     display_phone_number = value["metadata"]["display_phone_number"]
                     phone_number_id = value["metadata"]["phone_number_id"]
                     if display_phone_number != os.environ.get('bot_phone_number'):
-                        print("Wrong routing, not configured for this bot phone number", display_phone_number)
                         continue
                     if value.get("messages") is not None:
                         for message in value["messages"]:
@@ -86,12 +85,9 @@ def verify_webhook(event):
     signature = event["headers"]["x-hub-signature-256"]
     elements = signature.split("=")
     signatureHash = elements[1]
-    print("expected hmac signature hash is", signatureHash)
 
     key = os.environ.get("whatsapp_webhook_secret").encode()
     payload = event['body'].encode()
     calculatedHash = hmac.new(key, payload, digestmod=hashlib.sha256).hexdigest()
-            
-    print("calculated hash is " + calculatedHash)
+    
     return signatureHash != calculatedHash
-
