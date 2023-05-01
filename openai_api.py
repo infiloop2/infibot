@@ -46,7 +46,6 @@ def getChatCompletionResponseCommand(messages):
         model=model,
         messages=messages,
     )
-    print("Tokens used:", completion["usage"]["total_tokens"])
     ai_response = getResponsePreferCommand(completion["choices"])
     command = parse_command(ai_response)
     return ai_response, command
