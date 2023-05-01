@@ -1,7 +1,8 @@
 from whatsapp_sender import send_whatsapp_text_reply
 from system_messages import get_fresh_message, get_quota_left_message, get_deleted_message, get_capabilities_message, get_privacy_message, get_about_message
 from dynamo_api import get_quota
-from short_term_memory import write_short_term_memory
+from short_term_memory import write_short_term_memory, get_short_term_memory
+import json
 
 def is_system_command(mssg):
     if mssg.lower() == "help":
@@ -39,6 +40,11 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret):
 
     if mssg.lower() == "privacy":
         send_whatsapp_text_reply(phone_number_id, from_, get_privacy_message())
+        return
+
+    if mssg.lower() == "history":
+        h = get_short_term_memory(from_, user_secret)
+        send_whatsapp_text_reply(phone_number_id, from_ , json.dumps(h)[-2000:])
         return
 
     if mssg.lower() == "delete":

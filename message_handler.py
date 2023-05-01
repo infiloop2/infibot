@@ -12,7 +12,7 @@ from system_commands import is_system_command, handle_system_command
 # Handle text messages to phone number ID, from, timestamp with message body
 def handle_text_message(phone_number_id, from_, timestamp, message, user_secret):
     current_time = int(time.time())
-    if current_time - timestamp > 120:
+    if current_time - timestamp > 60:
         return
     
     if from_ == os.environ.get("admin_phone_number"):
