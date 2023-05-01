@@ -44,7 +44,7 @@ if len(response) < 1:
 print("===========================")
 
 print("Testing google search")
-search_results = google_search("current weather in london")
+search_results = google_search("what is the latest news")
 print("Search results for current weather in london: ",len(search_results.split(" ")), "words")
 if len(search_results) < 1:
     raise Exception("Sorry, no search results were found")
