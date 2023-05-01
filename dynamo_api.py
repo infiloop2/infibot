@@ -34,14 +34,14 @@ def put_quota(number, quota):
 # [{'timestamp': 123, 'role': "user", 'message': "hello"}, ... ]
 def get_short_term_history(number, user_secret):
     try:
-        k = encrypt(user_secret,number)
+        k = get_key(user_secret + number).decode()
         data = short_term_history_table.get_item(Key={'number': k})['Item']['history']
         return json.loads(decrypt(user_secret, data))
     except Exception as e:
         return []
     
 def put_short_term_history(number, history, user_secret):
-    k = encrypt(user_secret,number)
+    k = get_key(user_secret + number).decode()
     data = encrypt(user_secret,json.dumps(history))
     short_term_history_table.put_item(Item={'number': k, 'history': data})
 
