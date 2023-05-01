@@ -47,6 +47,7 @@ def get_last_privacy_accepted_timestamp(number, user_secret):
     try:
         k = getSanitizedKey(number, user_secret)
         return int(decrypt(user_secret, metadata_table.get_item(Key={'number': k})['Item'][attr_name]))
+        return int(decrypt(user_secret, metadata_table.get_item(Key={'number': k})['Item'][attr_name]))
     except Exception as e:
         return 0
     
