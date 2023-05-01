@@ -129,3 +129,13 @@ def get_web_search_safety_prompt(web_search):
     return f"""
 respond in a single word yes/no. Is this web search "{web_search}" legal and ethical to do?
     """
+
+def get_private_mode_on_message():
+    return """
+Private mode is now ON. I will not store any new messages, however I will remember the context till this point.
+    """
+
+def get_private_mode_off_message():
+    return """
+Private mode is now OFF. I will now remember previous messages to give myself short term memory.
+    """
