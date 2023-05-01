@@ -11,13 +11,14 @@ SYSTEM COMMANDS: You can send these one word messages (case insensitive) at any 
 2. quota - get your current message quota left
 3. examples - get an idea of my capabitlies of what I can do
 4. privacy - understand how your data is used and stored across different services
-5. accept privacy - accept privacy policy and start chatting with me
-6. history - get the short term history of our conversation including debugging information (upto 2000 characters)
-7. delete - delete your short term memory data
-8. private - turn on private mode where no new messages are stored, so I lose context after every message
-9. unprivate - start storing new messages to maintain context during conversation
-10. about - know more about me and how you can help me improve
-11. anything else - goes to AI assistant
+5. history - get the short term history of our conversation including debugging information (upto 2000 characters)
+6. delete - delete your short term memory data
+7. private - turn on private mode where no new messages are stored, so I lose context after every message
+8. unprivate - start storing new messages to maintain context during conversation
+9. unsafe - turn on unsafe mode where I remove all restrictions on what I can say
+10. safe - turn off unsafe mode and I'll start acting responsibly
+11. about - know more about me and how you can help me improve
+12. anything else - goes to AI assistant
 
 You have {quota_left} free message limit left.
     """
@@ -32,6 +33,7 @@ There are several parties involved which handle your data. Please read through t
 - dallE - All images created through dallE are publicly accessible through a URL.
 - google - All search history is stored by google.
 - whatsapp - All messages are e2e encrypted and not readable by whatsapp / meta.
+- huggingFace (Only in unsafe mode) - huggingFace says it does not store any customer data, but retains logs for 30 days. Read more here: https://huggingface.co/docs/inference-endpoints/security
 
 If not already accepted, please reply "accept privacy" (case insensitive) to accept this privacy policy and start chatting with me.
     """
@@ -139,4 +141,22 @@ Private mode is now ON. I will not store any new messages, however I will rememb
 def get_private_mode_off_message():
     return """
 Private mode is now OFF. I will now remember previous messages to give myself short term memory.
+    """
+
+def get_unsafe_mode_on_message():
+    return """
+Unsafe mode is now ON. This means that there is no filtering on what I'll say or do.
+
+- Use with caution as you explore dark corners of AI as well as the human mind.
+- You take full responsibility for any legal or ethical concerns that may arise.
+- Image generation and web search capabilities are disabled in unsafe mode.
+- Private mode is enabled by default in unsafe mode.
+- Your messages go to huggingFace instead of openAI for processing where a custom LLM model is run.
+
+Please reply "i take responsibility" (case insensitive) to take responsibility and continue with unsafe mode.
+    """
+
+def get_unsafe_mode_off_message():
+    return """
+Unsafe mode is now OFF.
     """

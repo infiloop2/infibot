@@ -45,7 +45,7 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
 
     # Handle system messages from users
     if is_system_command(message):
-        handle_system_command(message, phone_number_id, from_, user_secret)
+        handle_system_command(message, phone_number_id, from_, user_secret, is_private_on)
         return
 
     history = get_short_term_memory(from_, user_secret)
