@@ -10,7 +10,7 @@ from whatsapp_sender import send_whatsapp_text_reply
 from system_commands import is_system_command, handle_system_command, get_unsafe_mode_on_message
 
 # Update this whenever you change privacy/unsafe message so that you prompt the user to accept it again
-last_privacy_updated_timestamp = 1682950000
+last_privacy_updated_timestamp = 0
 last_unsafe_updated_timestamp = 1682950000
 
 # Handle text messages to phone number ID, from, timestamp with message body

@@ -10,6 +10,9 @@ SYSTEM COMMANDS: You can send these one word messages (case insensitive) at any 
 1. help - get this message again
 2. quota - get your current message quota left
 3. examples - get an idea of my capabitlies of what I can do
+
+ADVANCED:
+
 4. privacy - understand how your data is used and stored across different services
 5. history - get the short term history of our conversation including debugging information (upto 2000 characters)
 6. delete - delete your short term memory data
