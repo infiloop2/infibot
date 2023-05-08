@@ -38,6 +38,7 @@ SYSTEM COMMANDS: You can send these one word messages (case insensitive) at any 
 anything else - goes to AI assistant
 """
 
+#Add hugging face if required: - huggingFace (Only in unsafe mode) - huggingFace says it does not store any customer data, but retains logs for 30 days. Read more here: https://huggingface.co/docs/inference-endpoints/security
 def get_privacy_message():
     return f"""
 PRIVACY: 
@@ -48,7 +49,6 @@ There are several parties involved which handle your data. Please read through t
 - dallE - All images created through dallE are publicly accessible through a URL.
 - google - All search history is stored by google.
 - whatsapp - All messages are e2e encrypted and not readable by whatsapp / meta.
-- huggingFace (Only in unsafe mode) - huggingFace says it does not store any customer data, but retains logs for 30 days. Read more here: https://huggingface.co/docs/inference-endpoints/security
 
 If not already accepted, please reply "accept privacy" (case insensitive) to accept this privacy policy and start chatting with me.
     """
@@ -166,8 +166,8 @@ Unsafe mode is now ON. This means that there is no filtering on what I'll say or
 - You take full responsibility for any legal or ethical concerns that may arise.
 - Image generation and web search capabilities are disabled in unsafe mode.
 - Private mode is enabled by default in unsafe mode.
-- Your messages go to huggingFace instead of openAI for processing where a custom LLM model is run.
-- Quality of responses will sharply decline in unsafe mode as it will not be able to take benefir of openAI's data.
+- Your messages go to custom LLM model instead of openAI.
+- Quality of responses will sharply decline in unsafe mode as it will not be able to take benefit of openAI's data.
 - While all care is taken to protect privacy of your data, there is no formal guarantee. Deploy your own bot for maximum security.
 
 If not already taken, please reply "i take responsibility" (case insensitive) to continue with unsafe mode. Type safe to exit back to safe mode.
