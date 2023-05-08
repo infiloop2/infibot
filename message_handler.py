@@ -1,6 +1,6 @@
 import time
 import os
-from system_messages import get_fresh_message, under_quota_message, too_long_message,get_privacy_message
+from system_messages import get_intro_message, under_quota_message, too_long_message,get_privacy_message
 from rate_limits import is_within_limits, reset_limits, use_one_limit
 from short_term_memory import get_short_term_memory, write_short_term_memory, append_history
 from openai_api import get_openai_response
@@ -54,10 +54,10 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
 
     history = get_short_term_memory(from_, user_secret)
     if len(history) == 0:
-        # Send welcome message if not sent within last 6 hours already
+        # Send welcome message if not sent within last 7 days already
         last_ts = get_last_intro_message_timestamp(from_, user_secret)
-        if current_time - last_ts > 6 * 3600:
-            send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)), is_private_on, is_unsafe_on)
+        if current_time - last_ts > 7 * 24 * 3600:
+            send_whatsapp_text_reply(phone_number_id, from_, get_intro_message(get_quota(from_)), is_private_on, is_unsafe_on)
             put_last_intro_message_timestamp(from_, current_time, user_secret)
 
     # Verify user has accepted privacy policy

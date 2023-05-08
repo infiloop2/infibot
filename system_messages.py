@@ -1,31 +1,42 @@
-def get_fresh_message(quota_left):
+def get_intro_message(quota_left):
     # This message is returned when user does not have a short term history with the bot
     return f"""
 Hello,
     
-I am infibot, an intelligent AI model deployed by infiloop. I do not recall chatting with you in a while so will do a brief intro. You can ask me anything, I'll try to help you to the best of my capabilities.
+I am infibot, an intelligent AI model deployed by infiloop. I do not recall chatting with you in a while so will do a brief intro.
+You can ask me anything, I'll try to help you to the best of my capabilities. Just converse with me in normal language.
 
 SYSTEM COMMANDS: You can send these one word messages (case insensitive) at any point of time to execute special commands
 
 1. help - get this message again
 2. quota - get your current message quota left
 3. examples - get an idea of my capabitlies of what I can do
-
-ADVANCED:
-
 4. privacy - understand how your data is used and stored across different services
-5. history - get the short term history of our conversation including debugging information (upto 2000 characters)
-6. delete - delete your short term memory data
-7. private - turn on private mode where no new messages are stored, so I lose context after every message
-8. unprivate - start storing new messages to maintain context during conversation
-9. unsafe - turn on unsafe mode where I remove all restrictions on what I can say
-10. safe - turn off unsafe mode and I'll start acting responsibly
-11. about - know more about me and how you can help me improve
-12. reset - reset all settings and start afresh
-13. anything else - goes to AI assistant
+5. advaced - get advanced commands
 
 You have {quota_left} free message limit left.
     """
+
+def get_all_commands_message():
+    return f"""
+SYSTEM COMMANDS: You can send these one word messages (case insensitive) at any point of time to execute special commands
+
+1. help - get the basic intro message again
+2. quota - get your current message quota left
+3. examples - get an idea of my capabitlies of what I can do
+4. privacy - understand how your data is used and stored across different services
+5. advaced - get a list of all commands (This message)
+6. history - get the short term history of our conversation including debugging information (upto 2000 characters)
+7. delete - delete your short term memory data
+8. private - turn on private mode where no new messages are stored, so I lose context after every message
+9. unprivate - start storing new messages to maintain context during conversation
+10. unsafe - turn on unsafe mode where I remove all restrictions on what I can say
+11. safe - turn off unsafe mode and I'll start acting responsibly
+12. about - know more about me and how you can help me improve
+13. reset - reset all settings and start afresh
+
+anything else - goes to AI assistant
+"""
 
 def get_privacy_message():
     return f"""
