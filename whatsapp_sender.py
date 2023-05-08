@@ -10,9 +10,10 @@ def send_whatsapp_text_reply(phone_number_id, to, reply_message, is_private_on, 
     if is_unsafe_on:
         prefix = prefix + "💀Unsafe Mode ON:"
     
-        body_text = f"""{prefix}
+    body_text = f"""{prefix}
 {body_text}
-        """
+    """
+    
     json_data = {
         "messaging_product": "whatsapp",
         "to": to,
