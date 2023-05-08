@@ -5,6 +5,9 @@ from short_term_memory import write_short_term_memory, get_short_term_memory
 import json
 import time
 
+# Set this to true when implementation is complete
+allow_unsafe_mode = False
+
 def is_system_command(mssg):
     if mssg.lower() == "help":
         return True
@@ -94,6 +97,9 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
         return
     
     if mssg.lower() == "unsafe":
+        if not allow_unsafe_mode:
+            send_whatsapp_text_reply(phone_number_id, from_, "Sorry, Unsafe Mode is under development and not ready yet. Please try again later.", is_private_on, is_unsafe_on)
+            return
         if is_unsafe_on:
             send_whatsapp_text_reply(phone_number_id, from_, "Unsafe Mode is already ON", is_private_on, is_unsafe_on)
             return
