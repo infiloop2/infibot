@@ -1,6 +1,6 @@
 from whatsapp_sender import send_whatsapp_text_reply
 from system_messages import get_fresh_message, get_quota_left_message, get_deleted_message, get_capabilities_message, get_privacy_message, get_about_message, get_private_mode_off_message, get_private_mode_on_message, get_unsafe_mode_on_message, get_unsafe_mode_off_message
-from dynamo_api import get_quota, put_last_privacy_accepted_timestamp, put_private_mode, put_unsafe_mode, put_last_unsafe_accepted_timestamp
+from dynamo_api import get_quota, put_last_privacy_accepted_timestamp, put_private_mode, put_unsafe_mode, put_last_unsafe_accepted_timestamp, put_last_intro_message_timestamp
 from short_term_memory import write_short_term_memory, get_short_term_memory
 import json
 import time
@@ -123,6 +123,8 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
         if is_unsafe_on:
             put_unsafe_mode(from_, False, user_secret)
             send_whatsapp_text_reply(phone_number_id, from_, get_unsafe_mode_off_message(), is_private_on, is_unsafe_on)
+        put_last_intro_message_timestamp(from_,0, user_secret)
+        put_last_privacy_accepted_timestamp(from_,0, user_secret)
+        put_last_unsafe_accepted_timestamp(from_,0, user_secret)
 
-        send_whatsapp_text_reply(phone_number_id, from_, get_fresh_message(get_quota(from_)), is_private_on=False, is_unsafe_on=False)
         return
