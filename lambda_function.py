@@ -82,13 +82,14 @@ def lambda_handler(event, context):
     return response
 
 def getUserEncryptionSecret(event, from_):
-    # Not purely a user defined secret, but derived from aws parameters + rotated every day so as not to be
+    # Not purely a user defined secret, but derived from aws parameters so as not to be
     # predictable by admin
-    dominContext = event["requestContext"]["domainPrefix"]
-    unixTimestamp = int(event["requestContext"]["timeEpoch"])
+    domainContext = event["requestContext"]["domainPrefix"]
     userAgent = event["requestContext"]["http"]["userAgent"]
-    unixTimestamp = unixTimestamp - (unixTimestamp % 86400000) # Round down to nearest day
-    return str(dominContext)+str(userAgent)+str(from_)+str(unixTimestamp)
+    # Do not add timestamp as that changes the keys for each message
+    #unixTimestamp = int(event["requestContext"]["timeEpoch"])
+    #unixTimestamp = unixTimestamp - (unixTimestamp % 86400000) # Round down to nearest day
+    return str(domainContext)+str(userAgent)+str(from_)
 
 def verify_webhook(event):
     signature = event["headers"]["x-hub-signature-256"]
