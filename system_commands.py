@@ -1,5 +1,5 @@
 from whatsapp_sender import send_whatsapp_text_reply
-from system_messages import get_intro_message, get_quota_left_message, get_deleted_message, get_capabilities_message, get_privacy_message, get_about_message, get_private_mode_off_message, get_private_mode_on_message, get_unsafe_mode_on_message, get_unsafe_mode_off_message
+from system_messages import get_intro_message, get_quota_left_message, get_deleted_message, get_capabilities_message, get_privacy_message, get_about_message, get_private_mode_off_message, get_private_mode_on_message, get_unsafe_mode_on_message, get_unsafe_mode_off_message, get_all_commands_message
 from dynamo_api import get_quota, put_last_privacy_accepted_timestamp, put_private_mode, put_unsafe_mode, put_last_unsafe_accepted_timestamp, put_last_intro_message_timestamp
 from short_term_memory import write_short_term_memory, get_short_term_memory
 import json
@@ -14,6 +14,8 @@ def is_system_command(mssg):
         return True 
     if mssg.lower() == "privacy":
         return True 
+    if mssg.lower() == "advanced":
+        return True
     if mssg.lower() == "accept privacy":
         return True 
     if mssg.lower() == "history":
@@ -47,6 +49,10 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
 
     if mssg.lower() == "examples":
         send_whatsapp_text_reply(phone_number_id, from_, get_capabilities_message(), is_private_on, is_unsafe_on)
+        return
+
+    if mssg.lower() == "advanced":
+        send_whatsapp_text_reply(phone_number_id, from_, get_all_commands_message(), is_private_on, is_unsafe_on)
         return
 
     if mssg.lower() == "privacy":
