@@ -37,7 +37,7 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
         send_whatsapp_text_reply(phone_number_id, from_, under_quota_message(from_), is_private_on=False, is_unsafe_on=False)
         return
 
-    if len(message) > 2000:
+    if len(message) > 500:
         send_whatsapp_text_reply(phone_number_id, from_, too_long_message(), is_private_on=False, is_unsafe_on=False)
         return
     

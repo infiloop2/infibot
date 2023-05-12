@@ -4,6 +4,7 @@ from short_term_memory import write_short_term_memory, append_history
 import requests
 from bs4 import BeautifulSoup
 import os
+import re
 from system_messages import scrape_error_message, get_web_search_safety_prompt, unsafe_google_search_message
 
 def handle_command(command, phone_number_id, from_, history, user_secret, is_private_on, is_unsafe_on):
@@ -58,8 +59,8 @@ def google_search(term):
     if response.status_code == 200:
         try:
             r = ""
-            for item in response.json()['items'][:2]:
-                r = r + scrape_link(item['link'], 250) + "\n\n"
+            for item in response.json()['items'][:5]:
+                r = r + scrape_link(item['link'], 200) + "\n\n"
             return r
         except Exception as _:
             return None
@@ -78,8 +79,9 @@ def scrape_link(url, limit):
         response = requests.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
 
-        all_text = soup.get_text()
+        all_text = soup.get_text().lower()
         all_text = all_text.replace("\n", " ")
+        all_text = re.sub('[^a-z0-9 °]+', '', all_text)
         words = all_text.split(" ")
         good_words = [string for string in words if len(string) > 2]
         return " ".join(good_words[:limit])

@@ -4,5 +4,5 @@ This is the source code for infibot, a simple whatsapp webhook handler to run on
 
 ## Local Instructions
 
-- To zip the package and upload to aws lambda: `rm ../code.zip && zip ../code.zip *.py `
+- To zip the package and upload to aws lambda: `rm ../code.zip && zip ../code.zip *.py`
 - To test locally with test secrets: `export $(cat ../secrets-infibot | xargs) && python3 test.py`
