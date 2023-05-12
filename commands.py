@@ -59,8 +59,8 @@ def google_search(term):
     if response.status_code == 200:
         try:
             r = ""
-            for item in response.json()['items'][:5]:
-                r = r + scrape_link(item['link'], 200) + "\n\n"
+            for item in response.json()['items'][:3]:
+                r = r + scrape_link(item['link'], 250) + "\n\n"
             return r
         except Exception as _:
             return None
@@ -81,9 +81,9 @@ def scrape_link(url, limit):
 
         all_text = soup.get_text().lower()
         all_text = all_text.replace("\n", " ")
-        all_text = re.sub('[^a-z0-9 °]+', '', all_text)
+        #all_text = re.sub('[^a-z0-9 °]+', '', all_text)
         words = all_text.split(" ")
-        good_words = [string for string in words if len(string) > 2]
+        good_words = [string for string in words if len(string) > 2 and len(string) < 20]
         return " ".join(good_words[:limit])
     except Exception as _:
         return ""

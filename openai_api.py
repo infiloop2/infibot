@@ -16,7 +16,7 @@ def get_openai_response(message, history, optimiseCommand=True):
     messages = [
         {"role": "system", "content": get_main_system_prompt()},
     ]
-    limited_history = limit_history_tokens(history, 3000)
+    limited_history = limit_history_tokens(history, 2500)
     for h in limited_history:
         messages.append({"role": h.get("role"),
                         "content": h.get("message")})
