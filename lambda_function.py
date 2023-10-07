@@ -70,7 +70,8 @@ def lambda_handler(event, context):
                                     }
                                 try:
                                     handle_text_message(phone_number_id, from_, timestamp, message_body, getUserEncryptionSecret(event, from_))
-                                except Exception as _:
+                                except Exception as e:
+                                    print(f"An exception occurred: {e}")
                                     send_whatsapp_text_reply(phone_number_id, from_, system_error_message(), is_private_on=False, is_unsafe_on=False)
                                 return {
                                     "statusCode": 200,
