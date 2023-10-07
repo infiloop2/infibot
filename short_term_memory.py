@@ -9,7 +9,7 @@ def filter_and_sort_history(history):
         if int(message.get("timestamp")) > current_time - 3600*6: # 6 hours
             filtered.append(message)
     filtered.sort(key=lambda x: x.get("timestamp"))
-    return filtered[-20:] # Limited to last 20 messages
+    return filtered[-50:] # Limited to last 20 messages
 
 def append_history(h, role, message):
     current_time = int(time.time())

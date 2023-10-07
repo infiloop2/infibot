@@ -1,10 +1,11 @@
 from whatsapp_sender import send_whatsapp_text_reply
-from system_messages import tweet_disallowed_message,get_intro_message, get_quota_left_message, get_deleted_message, get_capabilities_message, get_privacy_message, get_about_message, get_private_mode_off_message, get_private_mode_on_message, get_unsafe_mode_on_message, get_unsafe_mode_off_message, get_all_commands_message
+from system_messages import found_tweet_context_message,tweet_disallowed_message,get_intro_message, get_quota_left_message, get_deleted_message, get_capabilities_message, get_privacy_message, get_about_message, get_private_mode_off_message, get_private_mode_on_message, get_unsafe_mode_on_message, get_unsafe_mode_off_message, get_all_commands_message
 from dynamo_api import get_quota, put_last_privacy_accepted_timestamp, put_private_mode, put_unsafe_mode, put_last_unsafe_accepted_timestamp, put_last_intro_message_timestamp
 from short_term_memory import write_short_term_memory, get_short_term_memory
 import json
 import time
 from twitter import send_tweet
+import re
 
 # Set this to true when implementation is complete
 allow_unsafe_mode = False
@@ -158,7 +159,16 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
             send_whatsapp_text_reply(phone_number_id, from_, "Last message not by assistant, not tweeting", is_private_on, is_unsafe_on)
             return
         tweet=last_message['message']
-        tweet_id=send_tweet(tweet, None)
+        last_found_tweet_id = None
+        for msg in history.reverse():
+            if msg['message'].find("https://x.com") != -1:
+                match = re.search("status/(\d+)?s=", msg['message'])
+                if match:
+                    last_found_tweet_id = print(f"{match.group(0)}")
+                    send_whatsapp_text_reply(phone_number_id, from_, found_tweet_context_message(last_found_tweet_id, msg['message']), is_private_on, is_unsafe_on)
+                    break
+
+        tweet_id=send_tweet(tweet, last_found_tweet_id)
         if tweet_id is None:
             send_whatsapp_text_reply(phone_number_id, from_, "Tweet failed", is_private_on, is_unsafe_on)
             return
