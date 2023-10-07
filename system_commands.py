@@ -158,7 +158,7 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
             send_whatsapp_text_reply(phone_number_id, from_, "Last message not by assistant, not tweeting", is_private_on, is_unsafe_on)
             return
         tweet=last_message['message']
-        tweet_id=send_tweet(tweet)
+        tweet_id=send_tweet(tweet, None)
         if tweet_id is None:
             send_whatsapp_text_reply(phone_number_id, from_, "Tweet failed", is_private_on, is_unsafe_on)
             return
