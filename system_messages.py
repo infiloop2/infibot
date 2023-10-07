@@ -100,6 +100,11 @@ def too_long_message():
 Sorry, I cannot process such long messages. Please keep it within 2000 characters and retry.
     """
 
+def system_admin_message():
+    return f"""
+Sorry this bot is private. Please contact infiloop if you want access.
+    """
+
 def system_error_message():
     return f"""
 Sorry a system error occured. Please try with a different prompt.

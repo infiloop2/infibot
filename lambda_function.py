@@ -4,10 +4,9 @@ import hmac
 import hashlib
 from message_handler import handle_text_message
 from whatsapp_sender import send_whatsapp_text_reply
-from system_messages import system_error_message
+from system_messages import system_error_message, system_admin_message
 
 def lambda_handler(event, context):
-    response = None
     # Handle GET requests for subscription verification
     if event.get("requestContext", {}).get("http", {}).get("method") == "GET":
         queryParams = event.get("queryStringParameters")
@@ -17,28 +16,28 @@ def lambda_handler(event, context):
                 verifyToken = queryParams.get("hub.verify_token")
                 if verifyToken == os.environ.get("whatsapp_webhook_secret"):
                     challenge = queryParams.get("hub.challenge")
-                    response = {
+                    return {
                         "statusCode": 200,
                         "body": int(challenge),
                         "isBase64Encoded": False
                     }
                 else:
                     responseBody = "Error, wrong validation token"
-                    response = {
+                    return {
                         "statusCode": 403,
                         "body": json.dumps(responseBody),
                         "isBase64Encoded": False
                     }
             else:
                 responseBody = "Error, wrong mode"
-                response = {
+                return {
                     "statusCode": 403,
                     "body": json.dumps(responseBody),
                     "isBase64Encoded": False
                 }
         else:
             responseBody = "Error, no query parameters"
-            response = {
+            return {
                 "statusCode": 403,
                 "body": json.dumps(responseBody),
                 "isBase64Encoded": False
@@ -62,24 +61,31 @@ def lambda_handler(event, context):
                                 from_ = message["from"]
                                 timestamp = int(message['timestamp'])
                                 message_body = message["text"]["body"]
+                                if from_ != os.environ.get("admin_phone_number"):
+                                    send_whatsapp_text_reply(phone_number_id, from_, system_admin_message(), is_private_on=False, is_unsafe_on=False)
+                                    return {
+                                        "statusCode": 200,
+                                        "body": json.dumps("Done"),
+                                        "isBase64Encoded": False
+                                    }
                                 try:
                                     handle_text_message(phone_number_id, from_, timestamp, message_body, getUserEncryptionSecret(event, from_))
                                 except Exception as _:
                                     send_whatsapp_text_reply(phone_number_id, from_, system_error_message(), is_private_on=False, is_unsafe_on=False)
-                                response = {
+                                return {
                                     "statusCode": 200,
                                     "body": json.dumps("Done"),
                                     "isBase64Encoded": False
                                 }
     else:
         responseBody = "Unsupported method"
-        response = {
+        return {
             "statusCode": 403,
             "body": json.dumps(responseBody),
             "isBase64Encoded": False
         }
 
-    return response
+    return None
 
 def getUserEncryptionSecret(event, from_):
     # Not purely a user defined secret, but derived from aws parameters so as not to be
