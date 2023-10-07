@@ -182,3 +182,8 @@ def get_unsafe_mode_off_message():
     return """
 Unsafe and private mode will now be turned OFF.
     """
+
+def tweet_disallowed_message():
+    return """
+Sorry, tweeting is not allowed in private or unsafe mode.
+    """

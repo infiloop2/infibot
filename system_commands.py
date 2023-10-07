@@ -1,9 +1,10 @@
 from whatsapp_sender import send_whatsapp_text_reply
-from system_messages import get_intro_message, get_quota_left_message, get_deleted_message, get_capabilities_message, get_privacy_message, get_about_message, get_private_mode_off_message, get_private_mode_on_message, get_unsafe_mode_on_message, get_unsafe_mode_off_message, get_all_commands_message
+from system_messages import tweet_disallowed_message,get_intro_message, get_quota_left_message, get_deleted_message, get_capabilities_message, get_privacy_message, get_about_message, get_private_mode_off_message, get_private_mode_on_message, get_unsafe_mode_on_message, get_unsafe_mode_off_message, get_all_commands_message
 from dynamo_api import get_quota, put_last_privacy_accepted_timestamp, put_private_mode, put_unsafe_mode, put_last_unsafe_accepted_timestamp, put_last_intro_message_timestamp
 from short_term_memory import write_short_term_memory, get_short_term_memory
 import json
 import time
+from twitter import send_tweet
 
 # Set this to true when implementation is complete
 allow_unsafe_mode = False
@@ -39,6 +40,8 @@ def is_system_command(mssg):
         return True 
     if mssg.lower() == "reset":
         return True 
+    if mssg.lower() == "tweet":
+        return True   
     return False
     
 def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_on, is_unsafe_on):
@@ -139,4 +142,26 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
         put_last_privacy_accepted_timestamp(from_,0, user_secret)
         put_last_unsafe_accepted_timestamp(from_,0, user_secret)
 
+        return
+    
+    if mssg.lower() == "tweet":
+        if is_unsafe_on or is_private_on:
+                send_whatsapp_text_reply(phone_number_id, from_, tweet_disallowed_message(), is_private_on, is_unsafe_on)
+                return
+        
+        history = get_short_term_memory(from_, user_secret)
+        if(len(history) < 1):
+            send_whatsapp_text_reply(phone_number_id, from_, "No existing history to tweet", is_private_on, is_unsafe_on)
+            return
+        last_message = history[-1]
+        if last_message["role"] != "assistant":
+            send_whatsapp_text_reply(phone_number_id, from_, "Last message not by assistant, not tweeting", is_private_on, is_unsafe_on)
+            return
+        tweet=last_message['message']
+        tweet_id=send_tweet(tweet)
+        if tweet_id is None:
+            send_whatsapp_text_reply(phone_number_id, from_, "Tweet failed", is_private_on, is_unsafe_on)
+            return
+        
+        send_whatsapp_text_reply(phone_number_id, from_, "Tweeted [id:"+str(tweet_id)+"]: "+tweet, is_private_on, is_unsafe_on)
         return
