@@ -8,7 +8,7 @@ import json
 from system_messages import get_main_system_prompt, cmd_not_found_message
 
 openai.api_key = os.environ.get("openai_token")
-model = "gpt-4"
+model = "gpt-3.5-turbo"
 
 def get_openai_response(message, history, optimiseCommand=True):
     ai_response = ""
