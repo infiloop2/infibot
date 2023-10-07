@@ -163,9 +163,9 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
         last_found_tweet_id = None
         for msg in reversed(history):
             if msg['message'].find("https://x.com") != -1:
-                match = re.search("status/(\d+)?s=", msg['message'])
+                match = re.search("status/(\d+)\?s=", msg['message'])
                 if match:
-                    last_found_tweet_id = print(f"{match.group(0)}")
+                    last_found_tweet_id = str(match.group(1))
                     send_whatsapp_text_reply(phone_number_id, from_, found_tweet_context_message(last_found_tweet_id, msg['message']), is_private_on, is_unsafe_on)
                     break
 

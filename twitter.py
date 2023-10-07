@@ -29,6 +29,7 @@ def send_tweet(text, reply_tweet_id):
     )
 
     if response.status_code != 201:
+        print("Error sending tweet", response.status_code,response.text)
         return None
     
     tweet_id=response.json()['data']['id']
