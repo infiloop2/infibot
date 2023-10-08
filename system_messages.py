@@ -199,9 +199,9 @@ Full message: {message}
 
 def get_tweet_system_prompt(tweet_id, tweet_text):
     return f"""
-Draft a tweet reply in less than 200 characters to the following tweet. Do not use any commands. Try to avoid any hashtags in the
-reply and repond in a witty creative manner to the tweet. You can also troll the tweet if you want, or give a serious response,
-or give a response which could be construed as either trolling or serious. You can also use emojis.
+Draft a tweet reply for the following tweet in less than 200 characters to the following tweet. Do not use any COMMANDS.
+Try to avoid any hashtags in the reply respond in a witty creative manner to the tweet.
+You can also troll the tweet if you want, or give a serious response. You can also use emojis.
 
 tweet_id:{tweet_id}: {tweet_text}
     """
