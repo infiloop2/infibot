@@ -197,12 +197,15 @@ Found previous tweetID: {tweet_id} in history. Will reply to this tweet.
 Full message: {message}
     """
 
-def get_tweet_user_prompt(tweet_id, tweet_text):
+def get_tweet_user_prompt(tweet_id, username, tweet_text):
     return f"""
-tweet_id:{tweet_id}:
-tweet_text: {tweet_text}
+Draft a tweet reply for the tweet by {username}
 
-Draft a tweet reply for the above tweet in less than 200 characters. Do not use any commands.
+"{tweet_text}"
+
+in less than 200 characters. Do not use any commands.
 Try to avoid any hashtags in the reply respond in a witty creative manner to the tweet.
 You can also troll the tweet if you want, or give a serious response. You can also use emojis.
+
+tweet_id:{tweet_id}:
     """

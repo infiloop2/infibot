@@ -221,4 +221,4 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
             return False, None
             
         send_whatsapp_text_reply(phone_number_id, from_, "Pulled tweet[id:"+tweet['tweet_id']+"][username:"+tweet['username']+"]: "+tweet['text'], is_private_on, is_unsafe_on)
-        return True, get_tweet_user_prompt(tweet['tweet_id'], tweet['text'])
+        return True, get_tweet_user_prompt(tweet['tweet_id'], tweet['username'], tweet['text'])
