@@ -76,7 +76,7 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
 
     if mssg.lower() == "history":
         h = get_short_term_memory(from_, user_secret)
-        send_whatsapp_text_reply(phone_number_id, from_ , json.dumps(h)[-2000:], is_private_on, is_unsafe_on)
+        send_whatsapp_text_reply(phone_number_id, from_ , json.dumps(h)[-1500:], is_private_on, is_unsafe_on)
         return False, None
 
     if mssg.lower() == "delete":
