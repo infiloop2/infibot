@@ -204,8 +204,11 @@ Draft a tweet reply for the tweet by {username}
 "{tweet_text}"
 
 in less than 200 characters. Do not use any commands.
-Try to avoid any hashtags in the reply respond in a witty creative manner to the tweet.
-You can also troll the tweet if you want, or give a serious response. You can also use emojis.
+Try to avoid any hashtags in the reply.
+Respond in a witty and creative manner to the tweet.
+You can troll the tweet if you want, or give a sarcastic response.
+You can also use emojis if it goes well with the tweet.
+Do not encapsulate your reply in quotes.
 
 tweet_id:{tweet_id}:
     """
