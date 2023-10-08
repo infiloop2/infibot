@@ -45,21 +45,6 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
     is_private_on = get_is_private_mode_on(from_, user_secret)
     is_unsafe_on = get_is_unsafe_mode_on(from_, user_secret)
 
-    # Handle system messages from users
-    if is_system_command(message):
-        handle_system_command(message, phone_number_id, from_, user_secret, is_private_on, is_unsafe_on)
-        return
-    
-    use_one_limit(from_)
-
-    history = get_short_term_memory(from_, user_secret)
-    if len(history) == 0:
-        # Send welcome message if not sent within last 7 days already
-        last_ts = get_last_intro_message_timestamp(from_, user_secret)
-        if current_time - last_ts > 7 * 24 * 3600:
-            send_whatsapp_text_reply(phone_number_id, from_, get_intro_message(get_quota(from_)), is_private_on, is_unsafe_on)
-            put_last_intro_message_timestamp(from_, current_time, user_secret)
-
     # Verify user has accepted privacy policy
     last_privacy_ts = get_last_privacy_accepted_timestamp(from_, user_secret)
     if last_privacy_ts < last_privacy_updated_timestamp:
@@ -75,8 +60,25 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
             send_whatsapp_text_reply(phone_number_id, from_, get_unsafe_mode_on_message(), is_private_on, is_unsafe_on)
             return
 
+    history = get_short_term_memory(from_, user_secret)
+    if len(history) == 0:
+        # Send welcome message if not sent within last 7 days already
+        last_ts = get_last_intro_message_timestamp(from_, user_secret)
+        if current_time - last_ts > 7 * 24 * 3600:
+            send_whatsapp_text_reply(phone_number_id, from_, get_intro_message(get_quota(from_)), is_private_on, is_unsafe_on)
+            put_last_intro_message_timestamp(from_, current_time, user_secret)
+
+    # Handle system messages from users
+    if is_system_command(message):
+        further_ai_reponse, system_message = handle_system_command(message, phone_number_id, from_, user_secret, is_private_on, is_unsafe_on)
+        if not further_ai_reponse:
+            return
+        if system_message is not None:
+            history = append_history(history, "system", system_message)
+
     ##### Main AI Response #####
     # TODO: Fork if unsafe mode is on
+    use_one_limit(from_)
     ai_response, command = get_openai_response(message, history)
     
     #Send assistant reply
