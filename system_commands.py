@@ -6,6 +6,7 @@ import json
 import time
 from twitter import send_tweet
 import re
+from twitter_db_api import append_reply
 
 # Set this to true when implementation is complete
 allow_unsafe_mode = False
@@ -162,8 +163,8 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
 
         last_found_tweet_id = None
         for msg in reversed(history):
-            if msg['message'].find("https://x.com") != -1:
-                match = re.search("status/(\d+)\?s=", msg['message'])
+            if msg["role"] == "system" and "tweet_id:" in msg['message']:
+                match = re.search("tweet_id:(\d+):", msg['message'])
                 if match:
                     last_found_tweet_id = str(match.group(1))
                     send_whatsapp_text_reply(phone_number_id, from_, found_tweet_context_message(last_found_tweet_id, msg['message']), is_private_on, is_unsafe_on)
@@ -171,8 +172,10 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
 
         tweet_id=send_tweet(tweet, last_found_tweet_id)
         if tweet_id is None:
-            send_whatsapp_text_reply(phone_number_id, from_, "Tweet failed", is_private_on, is_unsafe_on)
+            send_whatsapp_text_reply(phone_number_id, from_, "Sorry, tweet failed", is_private_on, is_unsafe_on)
             return
         
         send_whatsapp_text_reply(phone_number_id, from_, "Tweeted [id:"+str(tweet_id)+"]: "+tweet, is_private_on, is_unsafe_on)
+        if last_found_tweet_id is not None:
+            append_reply(last_found_tweet_id, tweet)
         return
