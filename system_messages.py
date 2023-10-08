@@ -197,7 +197,7 @@ Found previous tweetID: {tweet_id} in history. Will reply to this tweet.
 Full message: {message}
     """
 
-def get_tweet_system_prompt(tweet_id, tweet_text):
+def get_tweet_user_prompt(tweet_id, tweet_text):
     return f"""
 tweet_id:{tweet_id}:
 tweet_text: {tweet_text}

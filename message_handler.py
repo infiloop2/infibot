@@ -70,11 +70,11 @@ def handle_text_message(phone_number_id, from_, timestamp, message, user_secret)
 
     # Handle system messages from users
     if is_system_command(message):
-        further_ai_reponse, system_message = handle_system_command(message, phone_number_id, from_, user_secret, is_private_on, is_unsafe_on)
+        further_ai_reponse, updated_user_message = handle_system_command(message, phone_number_id, from_, user_secret, is_private_on, is_unsafe_on)
         if not further_ai_reponse:
             return
-        if system_message is not None:
-            history = append_history(history, "system", system_message)
+        if updated_user_message is not None:
+            message = updated_user_message
 
     ##### Main AI Response #####
     # TODO: Fork if unsafe mode is on

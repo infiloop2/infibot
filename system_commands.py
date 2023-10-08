@@ -1,5 +1,5 @@
 from whatsapp_sender import send_whatsapp_text_reply
-from system_messages import get_tweet_system_prompt, found_tweet_context_message,tweet_disallowed_message,get_intro_message, get_quota_left_message, get_deleted_message, get_capabilities_message, get_privacy_message, get_about_message, get_private_mode_off_message, get_private_mode_on_message, get_unsafe_mode_on_message, get_unsafe_mode_off_message, get_all_commands_message
+from system_messages import get_tweet_user_prompt, found_tweet_context_message,tweet_disallowed_message,get_intro_message, get_quota_left_message, get_deleted_message, get_capabilities_message, get_privacy_message, get_about_message, get_private_mode_off_message, get_private_mode_on_message, get_unsafe_mode_on_message, get_unsafe_mode_off_message, get_all_commands_message
 from dynamo_api import get_quota, put_last_privacy_accepted_timestamp, put_private_mode, put_unsafe_mode, put_last_unsafe_accepted_timestamp, put_last_intro_message_timestamp
 from short_term_memory import write_short_term_memory, get_short_term_memory
 import json
@@ -49,7 +49,7 @@ def is_system_command(mssg):
     return False
     
 # Returns true if further AI handling is needed, false otherwise
-# optionally returns second argument as an additional system message to add before AI
+# optionally returns second argument as a replacement user message to send to AI
 def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_on, is_unsafe_on):
     if mssg.lower() == "help":
         send_whatsapp_text_reply(phone_number_id, from_, get_intro_message(get_quota(from_)), is_private_on, is_unsafe_on)
@@ -167,7 +167,7 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
 
         last_found_tweet_id = None
         for msg in reversed(history):
-            if msg["role"] == "system" and "tweet_id:" in msg['message']:
+            if msg["role"] == "user" and "tweet_id:" in msg['message']:
                 match = re.search("tweet_id:(\d+):", msg['message'])
                 if match:
                     last_found_tweet_id = str(match.group(1))
@@ -221,4 +221,4 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
             return False, None
             
         send_whatsapp_text_reply(phone_number_id, from_, "Pulled tweet[id:"+tweet['tweet_id']+"][username:"+tweet['username']+"]: "+tweet['text'], is_private_on, is_unsafe_on)
-        return True, get_tweet_system_prompt(tweet['tweet_id'], tweet['text'])
+        return True, get_tweet_user_prompt(tweet['tweet_id'], tweet['text'])
