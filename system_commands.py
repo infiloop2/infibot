@@ -195,10 +195,30 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
             return False, None
         username = args[1]
         index = args[2]
+
+        try:
+            const_mapping = {
+                0: 'infiloop2',
+                1: 'elonmusk',
+                2: 'MarioNawfal',
+                3: 'POTUS',
+                4: 'RishiSunak',
+                5: 'PeterSchiff',
+                6: 'sama',
+                7: 'AISafetyMemes',
+                8: 'TiffanyFong_',
+                9: 'BillyM2k',
+                10: 'ylecun',
+                11: 'BanklessHQ',
+            }
+            username = const_mapping[int(username)]
+        except Exception as _:
+            None
+
         tweet = get_candidate_tweet(username, int(index))
         if tweet is None:
             send_whatsapp_text_reply(phone_number_id, from_, "Sorry, tweet not found for user at this index. Try a different user name or a lower index (min 0)", is_private_on, is_unsafe_on)
             return False, None
             
-        send_whatsapp_text_reply(phone_number_id, from_, "Pulled tweet[id:"+tweet['tweet_id']+"]: "+tweet['text'], is_private_on, is_unsafe_on)
+        send_whatsapp_text_reply(phone_number_id, from_, "Pulled tweet[id:"+tweet['tweet_id']+"][username:"+tweet['username']+"]: "+tweet['text'], is_private_on, is_unsafe_on)
         return True, get_tweet_system_prompt(tweet['tweet_id'], tweet['text'])
