@@ -34,6 +34,8 @@ SYSTEM COMMANDS: You can send these one word messages (case insensitive) at any 
 11. safe - turn off unsafe mode and I'll start acting responsibly
 12. about - know more about me and how you can help me improve
 13. reset - reset all settings and start afresh
+14. pt - pull a fresh tweet from database. Should be in format "pt username index"
+15. tweet - tweets the last AI response as a tweet. If a pt is found in history then it will reply to that tweet
 
 anything else - goes to AI assistant
 """
@@ -193,4 +195,13 @@ def found_tweet_context_message(tweet_id, message):
 Found previous tweetID: {tweet_id} in history. Will reply to this tweet.
 
 Full message: {message}
+    """
+
+def get_tweet_system_prompt(tweet_id, tweet_text):
+    return f"""
+Draft a tweet reply in less than 200 characters to the following tweet. Do not use any commands. Try to avoid any hashtags in the
+reply and repond in a witty creative manner to the tweet. You can also troll the tweet if you want, or give a serious response,
+or give a response which could be construed as either trolling or serious. You can also use emojis.
+
+tweet_id:{tweet_id}: {tweet_text}
     """

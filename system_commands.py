@@ -1,5 +1,5 @@
 from whatsapp_sender import send_whatsapp_text_reply
-from system_messages import found_tweet_context_message,tweet_disallowed_message,get_intro_message, get_quota_left_message, get_deleted_message, get_capabilities_message, get_privacy_message, get_about_message, get_private_mode_off_message, get_private_mode_on_message, get_unsafe_mode_on_message, get_unsafe_mode_off_message, get_all_commands_message
+from system_messages import get_tweet_system_prompt, found_tweet_context_message,tweet_disallowed_message,get_intro_message, get_quota_left_message, get_deleted_message, get_capabilities_message, get_privacy_message, get_about_message, get_private_mode_off_message, get_private_mode_on_message, get_unsafe_mode_on_message, get_unsafe_mode_off_message, get_all_commands_message
 from dynamo_api import get_quota, put_last_privacy_accepted_timestamp, put_private_mode, put_unsafe_mode, put_last_unsafe_accepted_timestamp, put_last_intro_message_timestamp
 from short_term_memory import write_short_term_memory, get_short_term_memory
 import json
@@ -44,7 +44,7 @@ def is_system_command(mssg):
         return True 
     if mssg.lower() == "tweet":
         return True   
-    if "pull tweet" in mssg.lower():
+    if "pt" in mssg.lower():
         return True
     return False
     
@@ -184,21 +184,21 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
             append_reply(last_found_tweet_id, tweet)
         return False, None
     
-    if "pull tweet" in mssg.lower():
+    if "pt" in mssg.lower():
         if is_unsafe_on or is_private_on:
             send_whatsapp_text_reply(phone_number_id, from_, tweet_disallowed_message(), is_private_on, is_unsafe_on)
             return False, None
         
         args = mssg.split(" ")
-        if len(args) != 4:
-            send_whatsapp_text_reply(phone_number_id, from_, "Invalid command. Format should be \"pull tweet username index\"", is_private_on, is_unsafe_on)
+        if len(args) != 3:
+            send_whatsapp_text_reply(phone_number_id, from_, "Invalid command. Format should be \"pt username index\"", is_private_on, is_unsafe_on)
             return False, None
-        username = args[2]
-        index = args[3]
+        username = args[1]
+        index = args[2]
         tweet = get_candidate_tweet(username, int(index))
         if tweet is None:
             send_whatsapp_text_reply(phone_number_id, from_, "Sorry, tweet not found for user at this index. Try a different user name or a lower index (min 0)", is_private_on, is_unsafe_on)
             return False, None
             
         send_whatsapp_text_reply(phone_number_id, from_, "Pulled tweet[id:"+tweet['tweet_id']+"]: "+tweet['text'], is_private_on, is_unsafe_on)
-        return False, None
+        return True, get_tweet_system_prompt(tweet['tweet_id'], tweet['text'])
