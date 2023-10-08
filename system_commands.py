@@ -6,7 +6,7 @@ import json
 import time
 from twitter import send_tweet
 import re
-from twitter_db_api import append_reply
+from twitter_db_api import append_reply, get_candidate_tweet
 
 # Set this to true when implementation is complete
 allow_unsafe_mode = False
@@ -44,6 +44,8 @@ def is_system_command(mssg):
         return True 
     if mssg.lower() == "tweet":
         return True   
+    if "pull tweet" in mssg.lower():
+        return True
     return False
     
 # Returns true if further AI handling is needed, false otherwise
@@ -180,4 +182,23 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
         send_whatsapp_text_reply(phone_number_id, from_, "Tweeted [id:"+str(tweet_id)+"]: "+tweet, is_private_on, is_unsafe_on)
         if last_found_tweet_id is not None:
             append_reply(last_found_tweet_id, tweet)
+        return False, None
+    
+    if "pull tweet" in mssg.lower():
+        if is_unsafe_on or is_private_on:
+            send_whatsapp_text_reply(phone_number_id, from_, tweet_disallowed_message(), is_private_on, is_unsafe_on)
+            return False, None
+        
+        args = mssg.split(" ")
+        if len(args) != 4:
+            send_whatsapp_text_reply(phone_number_id, from_, "Invalid command. Format should be \"pull tweet username index\"", is_private_on, is_unsafe_on)
+            return False, None
+        username = args[2]
+        index = args[3]
+        tweet = get_candidate_tweet(username, int(index))
+        if tweet is None:
+            send_whatsapp_text_reply(phone_number_id, from_, "Sorry, tweet not found for user at this index. Try a different user name or a lower index (min 0)", is_private_on, is_unsafe_on)
+            return False, None
+            
+        send_whatsapp_text_reply(phone_number_id, from_, "Pulled tweet[id:"+tweet['tweet_id']+"]: "+tweet['text'], is_private_on, is_unsafe_on)
         return False, None
