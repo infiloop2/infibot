@@ -13,7 +13,7 @@ tweets_table = dynamodb.Table('infiloop_tweets')
 
 def get_candidate_tweet(username, index):
     response = tweets_table.scan(
-        FilterExpression=Attr('username').eq(username) & Attr('reply').not_exists()
+        FilterExpression=Attr('username').eq(username)
     )
     items = response['Items']
     sorted_items = sorted(items, key=lambda x: int(x['scrape_timestamp']), reverse=True)
