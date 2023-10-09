@@ -192,7 +192,7 @@ Sorry, tweeting is not allowed in private or unsafe mode.
 
 def found_tweet_context_message(tweet_id, message):
     return f"""
-Found previous tweetID: {tweet_id} in history. Will reply to this tweet.
+Found previous tweetID: https://twitter.com/infiloop2/status/{tweet_id} in history. Will reply to this tweet.
 
 Full message: {message}
     """
