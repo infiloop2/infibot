@@ -44,7 +44,7 @@ def is_system_command(mssg):
         return True 
     if mssg.lower() == "tweet":
         return True   
-    if "pt" in mssg.lower():
+    if "pt " in mssg.lower():
         return True
     return False
     
@@ -179,12 +179,12 @@ def handle_system_command(mssg, phone_number_id, from_, user_secret, is_private_
             send_whatsapp_text_reply(phone_number_id, from_, "Sorry, tweet failed", is_private_on, is_unsafe_on)
             return False, None
         
-        send_whatsapp_text_reply(phone_number_id, from_, "Tweeted [id:"+str(tweet_id)+"]: "+tweet, is_private_on, is_unsafe_on)
+        send_whatsapp_text_reply(phone_number_id, from_, "Tweeted [ https://twitter.com/infiloop2/status/"+str(tweet_id)+" ]: "+tweet, is_private_on, is_unsafe_on)
         if last_found_tweet_id is not None:
             append_reply(last_found_tweet_id, tweet)
         return False, None
     
-    if "pt" in mssg.lower():
+    if "pt " in mssg.lower():
         if is_unsafe_on or is_private_on:
             send_whatsapp_text_reply(phone_number_id, from_, tweet_disallowed_message(), is_private_on, is_unsafe_on)
             return False, None
